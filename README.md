@@ -38,7 +38,7 @@ attention  de meme que sur TTS : "save & play" recharge la dernière save TTS su
 * Lancez TTS, chargez le module
 * Ouvrez le fichier cours_tts_01.lua sous VSC !
 
-![](https://github.com/benoitmialet/lua-scripting-tabletop-simulator/blob/main/img/tts_cours.png)
+![](https://github.com/benoitmialet/lua-scripting-tabletop-simulator/blob/main/img/tts_cours2.png)
 
 Vous pouvez maintenant utiliser les scripts des cours #1 à #8. Chacun de ces cours est fait pour fonctionner avec ce même module de cours. Ne supprimez pas d'objet sur la table si vous tenez à ce que tout fonctionne.
 Il faudra de la patience et vous exercer avec vos propres modules. **Commencez avec peu d'ambition**, en suivant les cours. Trop de fonctionnalités d'un coup peut porter à confusion dans le code et vous décourager.
