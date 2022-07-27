@@ -1,14 +1,14 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /05
--- Objectif:
+-- MAJ 27/07/2022
+-- Objectifs:
     -- Utiliser les Zones de script
     -- Quelques fontions avancées de positionnement et de déplacement
 ----------------------------------------------------------------------------------------------------
 
 -- une zone de script va servir à détecter un ou plusieurs objets et permet d'agir dessus
--- elle se déclare comme un objet avec getObjectFromGUID()
--- on l'utilise généralement avec les boucles FOR et les tests de condition IF
-
+-- elle est un objet comme les autres et se déclare avec getObjectFromGUID()
+-- on l'utilise généralement avec les boucles for et les tests de condition if
 
 button_setup_guid = '0926c8'
 zone_deck_guid = 'ae31a0'
@@ -16,21 +16,21 @@ zone_game_guid = 'acc4c5'
 button_zone_deck_guid = '1fb029'
 deck1_guid = 'c9c4c8'
 
--- Dans la fonction onLoad(), on va ajouter des déclaration de zones et changer un ou deux boutons
+-- Dans la fonction onLoad(), on va ajouter des déclarations de zones et changer un ou deux boutons
 function onLoad()
     button_setup = getObjectFromGUID(button_setup_guid)
     button_zone_deck = getObjectFromGUID(button_zone_deck_guid)
     deck1 = getObjectFromGUID(deck1_guid)
     -- une zone qui servira à détecter un deck :
     zone_deck = getObjectFromGUID(zone_deck_guid)
-    -- une autre au milieeu de la table :
+    -- une autre zone au milieu de la table :
     zone_game = getObjectFromGUID(zone_game_guid)
 
     -- ce bouton va distribuer des cartes sur la table
     button_setup.createButton({
         click_function = "setupTable",
         function_owner = Global,
-        label          = "Installer\nla table",
+        label          = "Installer\nla table", -- pour info, \n signifie "retour à la ligne"
         height          = 1000,
         width           = 2000,
         font_size       = 300,
@@ -39,7 +39,7 @@ function onLoad()
         rotation        = {0, 180, 0}
     })
 
-    -- ce bouton va piocher une carte sur la zone du deck
+    -- ce bouton va piocher une carte dans la zone du deck
     button_zone_deck.createButton({
         click_function = "pickCardFromZoneDeck",
         function_owner = Global,
@@ -62,7 +62,7 @@ function onLoad()
         {1.5, 1.04, 3.5}
     }
 
-    -- Informations sur les joueurs
+    -- Table d'informations sur les joueurs
     -- NOUVEAU : on définit une zone pour chaque joueur
     table_players = {
         ['White'] = {
@@ -97,8 +97,7 @@ end
 -- NOUVEAU : cette fonction ressemble à takeCardFromDeck1 (voir cours précédents)
     -- on la modifie pour piocher depuis une zone.
     -- quelle utilité ?
-        -- Elle fonctionnera à tous les coups, évitant de faire bugger
-        -- un script de pioche si le deck est absent ou détruit.
+        -- Elle fonctionnera à tous les coups, évitant de faire bugger un script de pioche si le deck est absent ou détruit.
         -- Cela arrive en général lorsqu'une pioche se vide.
     -- le principe :
         -- 1) on fait l'inventaire des objets contenus dans la zone
@@ -109,15 +108,15 @@ function pickCardFromZoneDeck()
     -- Elle retourne une table que l'on récupère pour la parcourir
     local objects = zone_deck.getObjects()
     -- on teste le type d'objet jusqu'à trouver un deck. Pour cela, on utilise l'attribut "type"
-    -- ATTENTION : ...
-        -- si on utilise getObjects() sur une ZONE, on doit utiliser :
+    -- ATTENTION IMPORTANT !!! :
+            -- si on utilise getObjects() sur une ZONE, on doit utiliser :
             -- getName() pour obtenir le nom de l'objet
             -- .type pour obtenir son type
         -- si on utilise getObjects() sur un CONTENEUR, on doit utiliser :
             -- .name pour obtenir le nom de l'objet (si l'objet n'a aucun nom, .name renvoie le type d'objet)
             -- .type n'existe pas (retourne "nil")
         -- (vous cherchez une logique dans tout ça ? Moi aussi...)
-    -- il existe énormément de types : 'Deck', 'Card', 'Token', 'Tile', 'Model', 'Bag'...
+    -- il existe énormément de types : 'Deck', 'Card', 'Token', 'Tile', 'Generic', 'Bag'...
         -- https://api.tabletopsimulator.com/built-in-object/#object-types
     for i, obj in ipairs(objects) do
         if obj.type == 'Deck' then
@@ -128,7 +127,7 @@ function pickCardFromZoneDeck()
         --sinon, si c'est une carte, on la déplace
         elseif obj.type == 'Card' then
             obj.flip()
-            --encore une nouvelle fonction pour déplacer les objets par rapport à leur position initiale.
+            -- Une autre fonction, pour déplacer les objets par rapport à leur position initiale.
             obj.translate({3, 0.5, 0})
         end
     end
@@ -153,7 +152,8 @@ function destructMissingPlayers()
     end
 end
 
--- une petite fonction pour vérifier si une valeur est contenue dans une table. Renvoie un "true le cas échéant"
+-- une petite fonction pour vérifier si une valeur est contenue dans une table.
+-- Elle retourne l'index de la valeur le cas échéant, sinon false
 function hasValue (tab, val)
     for index, value in ipairs(tab) do
         if value == val then

@@ -1,6 +1,7 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /07
--- Objectif:
+-- MAJ 27/07/2022
+-- Objectifs:
     -- Utiliser des fonctionnalités avancées sur les boutons
         -- les modifier avec editButton(), les supprimer avec clearButtons()
         -- reconnaître le joueur ayant cliqué et l'objet cliqué
@@ -176,7 +177,7 @@ function takeCardFromDeck1()
 end
 
 
---cette petite fonction regroupe les objets d'une zone
+--cette petite fonction regroupe les cartes d'une zone dans un même deck
 -- on ne s'en sert pas mais je voulais la montrer
 function groupCards(zone)
     local objects = zone.getObjects()

@@ -1,6 +1,7 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /07
--- Objectif:
+-- MAJ 27/07/2022
+-- Objectifs:
     -- Créer quelques fonctions utiles soi-même :
         -- Contrôler que tous les joueurs soient assis avant de démarrer une partie
         -- Désigner aléatoirement un premier joueur
@@ -20,7 +21,7 @@ function onLoad()
     cube_rouge = getObjectFromGUID(cube_rouge_guid)
 
     -- NOUVEAU : pour info, on peut tester la présence d'un objet sans passer par la donnée sauvegardée
-    -- C'est un raccourci qui ne marchera que dans onLoad()
+    -- ATTENTION : ce un raccourci ne marchera que dans onLoad()
     if button_setup then
         activateButtonSetup()
     end
@@ -98,7 +99,7 @@ function setupTable()
             params.rotation = {0, 180, 0}
             deck1.takeObject(params)
             -- Vector() est une fonction qui transforme une table de 3 valeurs en vecteur
-            -- on peut ainsi additionner, soustraire des vecteurs entre eux
+            -- on peut ainsi additionner, soustraire des vecteurs entre eux. Super pratique.
             pos = pos + Vector({3, 0, 0})
         end
         pos = pos + Vector({-18, 0, -4})

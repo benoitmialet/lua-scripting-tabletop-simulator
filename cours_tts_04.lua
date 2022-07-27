@@ -1,17 +1,18 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /04
+-- MAJ 27/07/2022
 -- Objectif:
-    -- Comprendre les test If...then
+    -- Comprendre les test if...then
 ----------------------------------------------------------------------------------------------------
--- un test "IF" sert à tester une condition et suit la logique du langage naturel:
+-- un test "if" sert à tester une condition et suit la logique du langage naturel:
     --"si [condition] alors..", "si [condition1] ou [condition2] alors.., sinon..."
--- Il existe plusieurs façons d'utiliser un IF (il y a un exemple de chaque dans le cours):
+-- Il existe plusieurs façons d'utiliser un if (il y a un exemple de chaque dans ce cours):
     -- en comparant avec une valeur numérique (attention aux notations) :  >10  <2  >=5  <= 6  ==5
     -- en comparant avec une chaîne de caractère : == 'le texte à comparer'
     -- avec un "booléen". C'est une variable qui ne peut prendre que 2 valeurs: 1 ou 0, true ou false, existe ou n'existe pas
 
 
---déclarer les guid des objets séparément permet de déclarer des objets à chaque fois que l'on en a besoin
+-- déclarer les guid des objets séparément permet de déclarer des objets à chaque fois que l'on en a besoin
 -- et pas seulement dans la fonction onLoad()
 -- suivant comment est organisé le script, cela peut être utile (on va s'en servir dans ce script)
 button_deck_guid = '49df24'
@@ -67,7 +68,7 @@ function setupPlayers()
         for i = 1, 5 do
             takeCardFromDeck1() --voir plus bas pour cette fonction
         end
-    -- ne jamais oublier de refermer un IF
+    -- ne jamais oublier de refermer un if
     end
 end
 
@@ -79,8 +80,13 @@ function takeCardFromDeck1()
         -- Pour cela, on teste si getObjectFromGUID() retourne "quelque chose":
             -- "si oui", on ne fait rien... La fonction continue son cours. C'est le rôle de "then else"
             -- "sinon", on l'interromp avec "return 0" (on retourne un résultat, peu importe lequel, cela stoppe la fonction)
-        -- (cela peut porter à confusion, bien relire et s'habituer)
-    if getObjectFromGUID(deck1_guid) then else return 0 end
+        -- (cela peut porter à confusion, bien relire la ligne qui suit et et s'y habituer !)
+    if getObjectFromGUID(deck1_guid) then
+    else
+        return 0
+    end
+        -- même chose compactée : 
+        -- if getObjectFromGUID(deck1_guid) then else return 0 end
     -- définir la position et la rotation de la carte piochée
     local params = {}
     params.position = deck1.getPosition()
@@ -92,18 +98,18 @@ end
 
 
 -- NOUVEAU : fonction pour piocher une reine
--- DIFFICILE...
+-- ATTENTION, DIFFICILE...
 function pickQueenFromDeck1()
     -- on fait l'inventaire de tous les objets (les cartes) contenues dans le deck1
     -- REMARQUE : si le deck1 n'existe plus, le script ne bug pas, la table est simplement vide.
     local cards = deck1.getObjects() -- ceci renvoie une table listant les objets
-    -- on va itérer (faire une boucle) sur toutes ces cartes et chercher les reines
+    -- on va itérer (faire une boucle) sur toutes ces cartes du deck et chercher les reines
     for index, object in ipairs(cards) do
         -- on teste à chaque fois si son nom correspond à "reine". On utilise l'attribut name
         if object.name == 'reine' then
             local params = {}
             -- on reprend le même principe que pour la fonction takeCardFromDeck1()
-            -- mais on ajoute le GUID de la carte pour la piocher spécifiquement
+            -- mais on ajoute le GUID de la carte pour piocher celle ci spécifiquement
             params.position = deck1.getPosition()
             params.position[1] = params.position[1] + 3
             params.rotation = {0, 180, 0}

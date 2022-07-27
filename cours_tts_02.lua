@@ -1,9 +1,11 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /02
+-- MAJ 27/07/2022
 -- Objectifs:
     -- Utilisation des boutons (suite)
     -- Distribuer des objets sur la table ou à des joueurs : les fonction takeObject() et deal()
 ----------------------------------------------------------------------------------------------------
+
 
 function onLoad()
     --definir des objets avec leur GUID (chaine de caractères)
@@ -11,7 +13,7 @@ function onLoad()
     button_setup = getObjectFromGUID('0926c8')
     deck1 = getObjectFromGUID('c9c4c8')
 
-    --créer des boutons cliquables sur un objet.
+    --créer tous les boutons cliquables, sur des objets.
         --bouton pour la fonction shuffleDeck() qui mélangera le deck1
     button_deck.createButton({
         click_function = "shuffleDeck", -- la fonction qui va être déclenchée en cliquant sur le bouton
@@ -36,7 +38,7 @@ function onLoad()
         position        = {0, 0.3, 1.2},
         rotation        = {0, 180, 0}
     })
-        --bouton fonction setup() qui distribuera des cartes aux joueurs
+        --bouton fonction setup() qui distribuera des cartes aux joueurs (attention on le place sur un autre objet)
     button_setup.createButton({
         click_function = "setup",
         function_owner = Global, 
@@ -50,6 +52,8 @@ function onLoad()
     })
 end
 
+-- NB : en nommant les fonctions dans les boutons, on ne peut pas passer de paramètre ou d'argument. C'est un inconvénient. 
+
 
 -- on définit ici une fonction que l'on nommera shuffleDeck()
 function shuffleDeck()
@@ -58,11 +62,17 @@ function shuffleDeck()
     -- et c'est tout, pas besoin de plus !
 end
 
+-- une meilleur façon décrire cette même fonction, pour la rendre générique, utilisable partout
+-- Pour qu'elle agisse, il faudrait l'appeler en écrivant : shuffleDeck(deck1), ce qui n'est pas possible via un bouton...
+-- function shuffleDeck(deck) -- ici on passe l'objet que l'on veut mélanger en paramètre, ou  "argument"
+--     deck.shuffle()
+-- end
+
 
 -- on définit ici la fonction takeCardFromDeck()
 function takeCardFromDeck1()
     -- La fonction takeObject() sert à piocher un objet  d'un sac ou d'un deck (carte).
-    -- Elle recquiert 2 paramètres qu'il faudra forcément appeler "position" et "rotation"
+    -- Elle recquiert 2 paramètres qu'il faudra obligatoirement appeler "position" et "rotation"
     -- ils doivent tous les deux être contenus dans une table {}.
     -- Pour faciliter l'écriture, on prépare donc cette table à l'avance que l'on nommera "params"
     -- On l'injectera ensuite comme paramètre de la fonction
@@ -74,8 +84,8 @@ function takeCardFromDeck1()
     -- on aurait pu aussi désigner la position en fonction de la position du deck
     -- (nb: la nouvelle table params que l'on définit ici remplacera la précédente)
     local params = {}
-    params.position = deck1.getPosition()
-    params.position[1] = params.position[1] + 3
+    params.position = deck1.getPosition() -- on prend la position du deck
+    params.position[1] = params.position[1] + 3 -- on décale de 3 vers la droite par rapport au deck 
     params.rotation = {0, 180, 0}
 
     --maintenant on pioche la carte du deck avec nos paramètres
@@ -83,7 +93,7 @@ function takeCardFromDeck1()
 end
 
 
--- on définit ici la fonction de mise en place()
+-- on définit ici la fonction de mise en place
 function setup()
     --on définit le nombre de joueurs
         -- getSeatedPlayers() renvoie une table qui contient 1 entrée (ligne) pour chaque joueur assis.
@@ -92,9 +102,13 @@ function setup()
 
     -- on définit ensuite le nombre de cartes à distribuer par joueur, en fonction de leur nombre
         -- astuce : on utilise pour cela une table. Son index représente le nombre de joueurs (ex: 2 joueurs -> 3 cartes)
+        -- en LUA, l'index d'une table démarre toujours à 1. L'index 1 correspon à la valeur 4, l'index 2 à 3, etc.
     nb_cards_to_deal = {4, 3, 2, 2, 2}
 
     -- on distribue les cartes aux joueurs sans oublier de mélanger le paquet avant
     deck1.shuffle()
-    deck1.deal(nb_cards_to_deal[nb_players]) --j'utilise ici le nombre de joueurs comme index de la table nb_cards_to_deal
+    -- attention il faut comprendre la ligne suivante !
+    -- j'utilise ici le nombre de joueurs comme index de la table nb_cards_to_deal
+    -- par exemple, s'il y a 3 joueurs assis, nb_cards_to_deal[nb_players] renverra la valeur 2
+    deck1.deal(nb_cards_to_deal[nb_players])
 end

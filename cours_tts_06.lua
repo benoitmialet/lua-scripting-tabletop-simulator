@@ -1,6 +1,7 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /06
--- Objectif:
+-- MAJ 27/07/2022
+-- Objectifs:
     -- Utiliser la sauvegarde de données
     -- Gérer le timing avec Wait.time()
 ----------------------------------------------------------------------------------------------------
@@ -13,14 +14,14 @@ deck1_guid = 'c9c4c8'
     -- ce qui suit est une façon de faire parmi d'autres. On peut sauvegarder n'importe quelle information que l'on souhaite.
     -- on commence à définir les données à sauvegarder
 game_data = {
-    -- setup_done sert par exemple à statuer si la partie a été mise en place ou non
+    -- Je créé par exemple setup_done pour statuer si la mise en place a été faite ou non
     setup_done = false,
     round_nb = 1,
 }
 
 -- on définit la fonction onSave, qui interviendra à chaque sauvegarde automatique ou manuelle
 function onSave()
-    -- la table game_data est sauvegardée dans le JSON
+    -- la table game_data est sauvegardée dans le fichier JSON du module
     saved_data = JSON.encode(game_data)
     return saved_data
 end
@@ -37,7 +38,7 @@ function onLoad(saved_data)
 
     -- NOUVEAU : utilisation de la donnée sauvegardée
     -- on déplace la création de bouton setup dans une fonction et on soumet son apparition à une condition
-    -- en effet, si la partie est déja mise en place, ce boouton n'a pas lieu d'être !
+    -- en effet, si la partie est déja mise en place, ce bouton n'a pas lieu d'apparaitre !
     if game_data.setup_done == false then
         activateButtonSetup()
     end
@@ -68,7 +69,7 @@ function activateButtonSetup()
     })
 end
 
--- NOUVEAU : Timing
+-- NOUVEAU : Gérer le timing
 -- on garde la meme fonction de mise en place (voir cours 03) mais on ajoute du timing
 function setupTable()
     --on définit le delai en secondes entre chaque carte posée
@@ -77,16 +78,16 @@ function setupTable()
     local delay = delay_add
     for i, position in ipairs(position_card) do
         -- on utilise la fonction Wait.time(). Ne pas oublier la majuscule à Wait !
-        -- tout ce qui concerne l'opération répétée à intercalée dans le temps doit être contenue à l'intérieur
-        -- elle vient donc à l'intérieur de la boucle FOR
+        -- tout ce qui concerne l'opération à intercaler dans le temps doit être contenue dans le Wait
+        -- elle vient donc à l'INTERIEUR de la boucle for
         Wait.time(function()
             local params = {}
             params.position = position
             params.rotation = {0, 180, 0}
             deck1.takeObject(params)
-            -- on ferme la fonction Wait.time() et on applique le délai avant le prochain tour de boucle FOR
+            -- on ferme la fonction Wait.time() et on applique le délai avant le prochain tour de boucle for
         end, delay)
-        -- enfin on incrémente le délai, pour que l'opérattion de la prochaine boucle soit légèrement décalée dans le temps
+        -- enfin on incrémente le délai, pour que l'opération de la prochaine boucle soit légèrement décalée dans le temps
         delay = delay + delay_add
     end
     -- NOUVEAU : Sauvegarder une donnée

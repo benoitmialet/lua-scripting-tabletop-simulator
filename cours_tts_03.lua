@@ -1,5 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /03
+-- MAJ 27/07/2022
 -- Objectif:
     -- Comprendre les boucles FOR
 ----------------------------------------------------------------------------------------------------
@@ -55,10 +56,10 @@ function onLoad()
     -- car on va en avoir besoin dans plusieurs fonctions
     nb_cards_to_deal = {4, 3, 2, 2, 1}
 
-    -- Pour distribuer des objets (ici des cartes) sur la table, il faudra utiliser des positions prédéfinies
-    -- Pour cela on remplit une table que l'on va parcourir ensuite avec une boucle
+    -- Pour distribuer des objets (ici des cartes) sur la table, on peut par exemple utiliser des positions prédéfinies
+    -- Pour cela on remplit une table de coordonnées, que l'on va parcourir ensuite avec une boucle for
     position_card = {
-        {-13.49, 1.04, 3.5},
+        {-13.49, 1.04, 3.5}, -- chaque entrée de la table est donc aussi une petite table... 
         {-10.5, 1.04, 3.5},
         {-7.51, 1.04, 3.5},
         {-4.5, 1.04, 3.5}
@@ -91,11 +92,12 @@ function onLoad()
 end
 
 
---cette fonction va utiliser 3 manières différentes de faire des boucles ("itérer") et afficher le résultat dans la console
+-- cette fonction va utiliser 3 manières différentes de faire des boucles ("itérer") et afficher le résultat dans la console
+-- elle ne sert à rien mais vous présente les 3 itérations possible en LUA
 function howToLoop()
     -- Les boucles for: il existe 3 façons d'itérer en LUA
 
-    print("------\nboucle simple :")
+    print("------\nboucle simple :") 
     -- La plus simple. Nécessite de connaître à l'avance le nombre d'itérations.
     for i = 1, 5 do   --début = 1, fin = 5. On va donc répéter l'opération qui suit 5 fois (en comptant de 1 à 5)
         print(i) --on imprime la valeur de i dans la console
@@ -104,6 +106,7 @@ function howToLoop()
     print("------\nboucle ipair (index-valeur) :")
     -- Le plus fréquent (90% des cas). Pour itérer sur une table dont les index sont numériques et uniquement numériques.
     -- L'itération se fait suivant ces index, dans l'ordre croissant (1, 2, 3, ...).
+    -- Attention : ici on décompose l'index et la valeur de chaque entrée de la table , la boucle les comprend automatiquement 
     for index, value in ipairs(nb_cards_to_deal) do
         print("Pour une partie à " .. index .. " joueur(s), chaque joueur pioche " .. value .. " cartes.")
     end
@@ -118,13 +121,13 @@ function howToLoop()
         -- on va l'utiliser pour récupérer le nom du compte Steam du joueur
         -- attention à la notation. [color] se met entre [] car il correspond à l'index de la tablePlayer.
         local name = Player[color].steam_name
-        print("Le joueur " .. color .. " a pour pseudo : " .. name)
+        print("Le joueur " .. color .. " a pour pseudonyme : " .. name)
     end
 
     print("------\nboucle pair (clé-valeur) :")
-    -- Pour Itérer sur une table dont les index sont alphabétiques ou numériques,
-    -- ou les deux ou lorsque l'on est pas certain de la nature des index.
-    -- L'itération se fait dans un ordre indéfini
+    -- Pour Itérer sur une table dont les index sont alphabétiques (fonctionne aussi avec les numériques),
+    -- Peut être utilisée lorsque l'on est pas certain de la nature des index.
+    -- L'itération se fait dans un ordre indéfini (pas forcément dans l'ordre)
     -- Notre table "player" par exemple utilise un index alphabatique (les couleurs) et nécessite cette fonction pairs()
     for color, value in pairs(player) do
         local message = player[color].message
@@ -164,6 +167,7 @@ function setupPlayers()
             -- 1er niveau : on parcourt les couleurs des joueurs en jeu
     for i, color in ipairs(colors_in_game) do
             -- 2e niveau : pour chaque couleur (joueur), on parcourt les positions enregistrées dans .position_token
+            -- (voir lignes 70-91)
         for j, _ in ipairs(player[color].position_token) do
             local params = {}
             params.position = player[color].position_token[j]
