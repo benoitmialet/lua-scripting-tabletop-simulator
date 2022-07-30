@@ -68,4 +68,4 @@ end
 
 -- ASTUCE : "commenter" du code sera très utile pour le désactiver, ou écrire des commentaires.
 -- un commentaire commence par --
--- pour désactiver un ou plusieurs lignes à la fois sou VSCode, surlignez les lignes, puis CTRL + /
+-- pour désactiver une ou plusieurs lignes à la fois sous VSCode, surlignez les lignes, puis CTRL + /
