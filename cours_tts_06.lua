@@ -94,3 +94,10 @@ function setupTable()
     -- A la fin de la mise en place, je donne l'information que la mise en place est faite. Elle sera sauvegardée
     game_data.setup_done = true
 end
+
+
+-- NB: La fonction Wait.time() donne l'illusion que le code placé en paramètre va "attendre" avant d'être exécuté
+-- En réalité il n'en est rien. Tout le bloc de code sera exécuté instantément. 
+-- C'est son processus qui va être décalé dans le temps. Cela peut crééer des surprises inattendues.
+-- Si vous cherchez a réellement décaller des processus dans le temps, utilisez un Timer (voir le cours 09)
+-- Wait.time() est cependant parfait pour le positionnement d'objets dynamiques.
