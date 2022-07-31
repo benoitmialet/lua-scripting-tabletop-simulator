@@ -171,7 +171,7 @@ end
 function takeCardFromDeck1()
     local params = {}
     params.position = deck1.getPosition()
-    params.position[1] = params.position[1] + 3
+    params.position = params.position + Vector({3, 1, 0})
     params.rotation = {0, 180, 0}
     deck1.takeObject(params)
 end

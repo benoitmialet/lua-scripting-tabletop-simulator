@@ -90,7 +90,7 @@ function takeCardFromDeck1()
     -- définir la position et la rotation de la carte piochée
     local params = {}
     params.position = deck1.getPosition()
-    params.position[1] = params.position[1] + 3
+    params.position = params.position + Vector({3, 1, 0})
     params.rotation = {0, 180, 0}
     --piocher la carte du deck avec ces paramètres
     deck1.takeObject(params)
@@ -111,7 +111,7 @@ function pickQueenFromDeck1()
             -- on reprend le même principe que pour la fonction takeCardFromDeck1()
             -- mais on ajoute le GUID de la carte pour piocher celle ci spécifiquement
             params.position = deck1.getPosition()
-            params.position[1] = params.position[1] + 3
+            params.position = params.position + Vector({3, 1, 0})
             params.rotation = {0, 180, 0}
             params.guid = object.guid
             -- cela marcherait aussi bien en prenant l'index de la carte dans la liste des objets détectés plutot que le guid

@@ -98,11 +98,10 @@ function setupTable()
             params.position = pos
             params.rotation = {0, 180, 0}
             deck1.takeObject(params)
-            -- Vector() est une fonction qui transforme une table de 3 valeurs en vecteur
-            -- on peut ainsi additionner, soustraire des vecteurs entre eux. Super pratique.
-            pos = pos + Vector({3, 0, 0})
+
+            pos = pos + Vector({3, 1, 0})
         end
-        pos = pos + Vector({-18, 0, -4})
+        pos = pos + Vector({-18, 1, -4})
     end
 
     -- NOUVEAU : On détermine le premier joueur

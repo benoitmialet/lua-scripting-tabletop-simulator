@@ -4,6 +4,7 @@
 -- Objectifs:
     -- Utilisation des boutons (suite)
     -- Distribuer des objets sur la table ou à des joueurs : les fonction takeObject() et deal()
+    -- Utilisation de la classe Vector() pour calculer des positions
 ----------------------------------------------------------------------------------------------------
 
 
@@ -85,7 +86,14 @@ function takeCardFromDeck1()
     -- (nb: la nouvelle table params que l'on définit ici remplacera la précédente)
     local params = {}
     params.position = deck1.getPosition() -- on prend la position du deck
-    params.position[1] = params.position[1] + 3 -- on décale de 3 vers la droite par rapport au deck 
+
+    -- NOUVEAU : Vector() est une classe qui transforme une table de 3 valeurs en vecteur
+    -- on peut ainsi additionner, soustraire des vecteurs entre eux. Super pratique.
+    -- C'est une bonne pratique à garder pour la suite.
+    -- Ici par exemple, on veut décaler la position de 3 vers la droite et 2 vers le haut par rapport au deck
+    params.position = params.position + Vector({3, 1, 0})
+    -- on aurait pu écrire la ligne suivante, moins pratique 
+    -- params.position[1] = params.position[1] + 3
     params.rotation = {0, 180, 0}
 
     --maintenant on pioche la carte du deck avec nos paramètres
