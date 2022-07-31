@@ -22,10 +22,9 @@ counting_tile_guid = 'cf92d0' -- (notre tuile de comptage sera par exemple le pl
 
 function onLoad()
 -------------------------------------------------------------------------------------------------
--- TUILE DE COMPTAGE : PARAMETRES (DANS ONLOAD)
+-- TUILE DE COMPTAGE : PARAMETRES ( A INSERER DANS ONLOAD)
 -------------------------------------------------------------------------------------------------
     counting_tile_object = getObjectFromGUID(counting_tile_guid)
-    zone_capture = getObjectFromGUID('fd0323')
     name_resource1 = 'monnaie1'    color_resource1 = 'Red'
     name_resource2 = 'monnaie2'    color_resource2 = 'Blue'
     activateCountingTile()
@@ -69,7 +68,7 @@ function activateCountingTile()
         rotation          = counting_tile_object.getRotation(),
         scale             = counting_tile_object.getScale() + Vector({0, 3, 0}),
     })
-    -- NB : spawnObject() permet de générer tout type d'objet, built-in ou custom,et mêem de leur donner des attributs
+    -- NB : spawnObject() permet de générer tout type d'objet, built-in ou custom,et même de leur donner des attributs
     -- https://api.tabletopsimulator.com/built-in-object/ 
 end
 
@@ -80,10 +79,11 @@ end
 -- Il en existe une grande quantité : https://api.tabletopsimulator.com/events/
 -- onObjectEnterScriptingZone() se déclenchera à l'entrée de tout objet dans la zone en question.
 function onObjectEnterScriptingZone(zone, enter_object)
+    -- on ne s'intresse qu'à la zone de capture et non à toutes les zones de script
     if zone.guid == zone_capture.guid then
-        -- NOUVEAU : ici on utilise les GMNotes plutot que le nom. Les GMNotes sont un nom "caché" que l'on peut
-        -- donner à un objet uniquement en étant le joueur GM (noir) et en faisant clic droit sur un objet.
-        -- cela permet de nommer discrètement des objets pour le script.
+        -- NOUVEAU : ici on utilise les GMNotes des objets plutot que le nom. Les GMNotes sont un nom "caché" 
+        -- que l'on peut donner à un objet uniquement en étant le joueur GM (noir) et en faisant clic droit sur l'objet.
+        -- Cela permet de nommer discrètement des objets pour le script.
         local name = enter_object.getGMNotes()
         if name == name_resource1 or name == name_resource2 then
             CountResources(name)
@@ -117,3 +117,11 @@ function CountResources(name)
     counting_tile_object.editButton({ index = 1, label = name_resource2..' : '..resource2 })
 end
 -------------------------------------------------------------------------------------------------
+
+-- NB : Scripter un objet
+-- tout le code de cette page devrait plutôt être inséré dans un objet, et non dans l'environnement global
+-- L'avantage de cette pratique et que l'objet pourra être exporté dans n'importe quel module et fonctionnera parfaitement
+-- Pour réaliser cela :
+    -- clic droit sur la tuile de comptage, ouvrir la fenêtre de script, copier le script
+    -- remplacer    function_owner=Global    par     function_owner=self
+    -- cela précise à quel objet la fonction est rattachée (ici la tuile de comptage)

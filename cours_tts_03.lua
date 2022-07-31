@@ -67,6 +67,8 @@ function onLoad()
 
     -- La table suivante contiendra les informations sur les joueurs
     -- par exemple : la position des jetons à distribuer et leur orientation
+    -- il existe des moyens automatisés pour déterminer ces positions et orientations,
+    -- Mais commençons par des choses simples et efficaces 
     player = {
         ['White'] = {
             message = "j'aime les frites",
@@ -100,7 +102,7 @@ function howToLoop()
     print("------\nboucle simple :") 
     -- La plus simple. Nécessite de connaître à l'avance le nombre d'itérations.
     for i = 1, 5 do   --début = 1, fin = 5. On va donc répéter l'opération qui suit 5 fois (en comptant de 1 à 5)
-        print(i) --on imprime la valeur de i dans la console
+        print(i) -- i est le compteur que l'on a nommé. On imprime sa valeur dans la console
     end
 
     print("------\nboucle ipair (index-valeur) :")
