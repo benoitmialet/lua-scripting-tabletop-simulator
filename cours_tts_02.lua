@@ -90,10 +90,12 @@ function takeCardFromDeck1()
     -- NOUVEAU : Vector() est une classe qui transforme une table de 3 valeurs en vecteur
     -- on peut ainsi additionner, soustraire des vecteurs entre eux. Super pratique.
     -- C'est une bonne pratique à garder pour la suite.
-    -- Ici par exemple, on veut décaler la position de 3 vers la droite et 2 vers le haut par rapport au deck
+    -- Ici par exemple, on veut décaler la position de 3 vers la droite et de 1 vers le haut par rapport au deck
     params.position = params.position + Vector({3, 1, 0})
-    -- on aurait pu écrire la ligne suivante, moins pratique 
+    -- on aurait pu écrire les deux lignes suivantes, moins pratiques 
     -- params.position[1] = params.position[1] + 3
+    -- params.position[2] = params.position[2] + 1
+
     params.rotation = {0, 180, 0}
 
     --maintenant on pioche la carte du deck avec nos paramètres

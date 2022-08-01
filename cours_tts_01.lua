@@ -12,7 +12,8 @@
     --2) nommer les variables et fonctions en anglais
         -- écrire les fonctions en "CamelCase" : countNumberOfTiles()
         -- écrire les variables en "lower case" : my_variable,  nb_tiles,...
-    --3) la page (API) contenant toutes les fonctions et attributs rattachés aux objets:
+    --3) la page (API) contenant toutes les fonctions et attributs rattachés aux objets
+        -- N.B.: vous ne pourrez pas coder sur TTS sans consulter ce site !
         -- https://api.tabletopsimulator.com/object/
 
 

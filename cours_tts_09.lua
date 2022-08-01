@@ -2,9 +2,9 @@
 -- SCRIPTER POUR TABLETOP SIMULATOR /09
 -- MAJ 30/07/2022
 -- Objectifs:
-    -- Créér un système de comptage de ressources
+    -- Créer un système de comptage de ressources
     -- Générer des objets (zone)
-    -- Utiliser des fonctions d'évenement
+    -- Utiliser des fonctions d'événement
 ----------------------------------------------------------------------------------------------------
 
 -- On peut imaginer une infinité de méthodes pour créer un système de comptage de ressources.
@@ -22,7 +22,7 @@ counting_tile_guid = 'cf92d0' -- (notre tuile de comptage sera par exemple le pl
 
 function onLoad()
 -------------------------------------------------------------------------------------------------
--- TUILE DE COMPTAGE : PARAMETRES ( A INSERER DANS ONLOAD)
+-- TUILE DE COMPTAGE : PARAMETRES (A INSERER DANS ONLOAD)
 -------------------------------------------------------------------------------------------------
     counting_tile_object = getObjectFromGUID(counting_tile_guid)
     name_resource1 = 'monnaie1'    color_resource1 = 'Red'
@@ -79,11 +79,11 @@ end
 -- Il en existe une grande quantité : https://api.tabletopsimulator.com/events/
 -- onObjectEnterScriptingZone() se déclenchera à l'entrée de tout objet dans la zone en question.
 function onObjectEnterScriptingZone(zone, enter_object)
-    -- on ne s'intresse qu'à la zone de capture et non à toutes les zones de script
+    -- on ne s'intéresse qu'à la zone de capture et non à toutes les zones de script
     if zone.guid == zone_capture.guid then
         -- NOUVEAU : ici on utilise les GMNotes des objets plutot que le nom. Les GMNotes sont un nom "caché" 
         -- que l'on peut donner à un objet uniquement en étant le joueur GM (noir) et en faisant clic droit sur l'objet.
-        -- Cela permet de nommer discrètement des objets pour le script.
+        -- Cela permet de nommer "discrètement" des objets pour le script.
         local name = enter_object.getGMNotes()
         if name == name_resource1 or name == name_resource2 then
             CountResources(name)

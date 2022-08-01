@@ -109,7 +109,7 @@ function pickQueenFromDeck1()
         if object.name == 'reine' then
             local params = {}
             -- on reprend le même principe que pour la fonction takeCardFromDeck1()
-            -- mais on ajoute le GUID de la carte pour piocher celle ci spécifiquement
+            -- mais on ajoute le GUID de la carte pour piocher celle-ci spécifiquement
             params.position = deck1.getPosition()
             params.position = params.position + Vector({3, 1, 0})
             params.rotation = {0, 180, 0}
