@@ -111,9 +111,11 @@ function pickCardFromZoneDeck()
     -- ATTENTION IMPORTANT !!! :
             -- si on utilise getObjects() sur une ZONE, on doit utiliser :
             -- getName() pour obtenir le nom de l'objet
+            -- getGMNotes() pour obtenir le nom caché
             -- .type pour obtenir son type
         -- si on utilise getObjects() sur un CONTENEUR, on doit utiliser :
             -- .name pour obtenir le nom de l'objet (si l'objet n'a aucun nom, .name renvoie le type d'objet)
+            -- .gm_notes pour obtenir le nom caché
             -- .type n'existe pas (retourne "nil")
         -- (vous cherchez une logique dans tout ça ? Moi aussi...)
     -- il existe énormément de types : 'Deck', 'Card', 'Token', 'Tile', 'Generic', 'Bag'...
