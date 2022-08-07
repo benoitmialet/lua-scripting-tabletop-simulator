@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /07
--- MAJ 27/07/2022
+-- MAJ 07/08/2022
 -- Objectifs:
     -- Utiliser des fonctionnalités avancées sur les boutons
         -- les modifier avec editButton(), les supprimer avec clearButtons()
@@ -13,14 +13,17 @@ button_deck_guid = '49df24'
 deck1_guid = 'c9c4c8'
 zone_game_guid = 'acc4c5'
 
--- Dans la fonction onLoad(), on va ajouter des déclaration de zones et changer un ou deux boutons
 function onLoad()
     button_setup = getObjectFromGUID(button_setup_guid)
     button_deck = getObjectFromGUID(button_deck_guid)
     deck1 = getObjectFromGUID(deck1_guid)
     zone_game = getObjectFromGUID(zone_game_guid)
+    spawnSetupButtons()
+end
 
-    -- on garde le bouton de mise en place
+-- BOUTONS DECORATIFS
+    -- on peut créer des boutons "décoratifs" (juste du texte affiché) qui renvoient vers une fonction vide
+function spawnSetupButtons()
     button_setup.createButton({
         click_function = "setupTable",
         function_owner = Global,
@@ -33,7 +36,6 @@ function onLoad()
         rotation        = {0, 180, 0}
     })
 
-    --on garde ces deux boutons (cours 02)
     button_deck.createButton({
         click_function = "shuffleDeck",
         function_owner = Global,
@@ -45,6 +47,7 @@ function onLoad()
         position        = {0, 0.3, 1.2},
         rotation        = {0, 180, 0}
     })
+
     button_deck.createButton({
         click_function = "takeCardFromDeck1",
         function_owner = Global,
@@ -56,8 +59,8 @@ function onLoad()
         position        = {0, 0.3, 0},
         rotation        = {0, 180, 0}
     })
-    --NOUVEAU : on peut créer des boutons "décoratifs" (juste du texte affiché)
-    button_deck.createButton({
+
+    button_deck.createButton({ -- bouton décoratif
         click_function = "doNothing",
         function_owner = Global,
         label          = "Texte décoratif :)",
@@ -68,51 +71,52 @@ function onLoad()
         position        = {0, 0.3, -1.2},
         rotation        = {0, 180, 0}
     })
-
-    -- Position des cartes sur la table
-    position_card = {
-        {-13.49, 1.04, 3.5},
-        {-10.5, 1.04, 3.5},
-        {-7.51, 1.04, 3.5},
-        {-4.5, 1.04, 3.5},
-        {-1.5, 1.04, 3.5},
-        {1.5, 1.04, 3.5}
-    }
 end
 
 --fonction reliée au bouton décoratif
 function doNothing()
 end
 
--- NOUVEAU : Identifier qui a cliqué et quel objet est cliqué
--- TOUTE fonction lancée de puis un bouton inclut part défaut deux arguments. On les nomme comme on veut :
-    -- Le 1er est l'objet sur lequel le bouton cliqué se situe (ici, on ne se servira pas de cet argument, donc on le note "_")
-    -- Le 2e est la couleur du joueur ayant cliqué. On va l'utiliser pour savoir à qui envoyer la carte
--- on peut ajouter autant d'arguments que l'on veut ensuite (ici pas besoin)
-function pickFromDeck(_, color)
+-- IDENTIFIER LE JOUEUR AYANT CLIQUE SUR UN BOUTON ET QUEL OBJET EST CLIQUE
+    -- TOUTE fonction lancée de puis un bouton inclut part défaut deux arguments. On les nomme comme on veut :
+        -- Le 1er est l'objet sur lequel le bouton cliqué se situe (on ne va pas l'utiliser)
+        -- Le 2e est la couleur du joueur ayant cliqué. On va l'utiliser pour savoir à qui envoyer la carte
+    -- on peut ajouter autant d'arguments que l'on veut ensuite (ici pas besoin)
+function pickFromDeck(object, color)
     deck1.dealToColor(1, color)
     broadcastToAll("Le joueur "..color.." a pioché une carte", color)
 end
 
 
---  On va modifier la fonction de mise en place (cours 03) pour générer et éditer des boutons
+-- On va modifier la fonction de mise en place (cours 03) pour générer et éditer des boutons
+-- AJOUTER UN BOUTON SUR CHAQUE CARTE PIOCHEE
+    -- on créée une fonction addPickButton() pour cela, c'est plus facile à lire et à digérer
+    -- on ajoute évidemment card en argument, pour préciser sur quelle carte la fonction doit agir
+-- EDITER UN BOUTON
+    -- on utilise editButton(). L'index du bouton est le seul paramètre obligatoire.
+    -- l'index du bouton correspond au n° du bouton sur l'objet qui les porte, par ordre de création
+    -- ATTENTION : contrairement à une table, l'index d'un bouton commence à 0. C'est comme ça !
+    -- ici par exemple, on change le 3e bouton sur button_deck. Son idex sera donc 2
+    -- Ensuite on renseigne uniquement les paramètres du bouton à changer, les autres sont conservés.
 function setupTable()
+    local position_card = {
+            {-13.49, 1.04, 3.5},
+            {-10.5, 1.04, 3.5},
+            {-7.51, 1.04, 3.5},
+            {-4.5, 1.04, 3.5},
+            {-1.5, 1.04, 3.5},
+            {1.5, 1.04, 3.5}
+        }
     for i, position in ipairs(position_card) do
         local params = {}
         params.position = position
         params.rotation = {0, 180, 0}
         local card = deck1.takeObject(params)
-        --NOUVEAU : ajouter un bouton cliquable à chaque carte piochée au cours de la boucle
-        -- on créée une fonction pour cela, c'est plus facile à lire et à digérer
+
         addPickButton(card)
-        -- NOUVEAU : pour transformer un bouton en un autre, on utilise editButton()
-            -- L'index est le seul paramètre obligatoire.
-                -- il correspond à l'index des boutons situés sur l'objet par ordre de création
-                -- ATTENTION : contrairement à une table, un objet, etc., l'index d'un bouton commence à 0. C'est comme ça !
-                -- ici par exemple, on change le 3e bouton sur button_deck. Son idex sera donc 2
-            -- Ensuite on renseigne uniquement les paramètres à changer, rien d'autre.
+
         button_deck.editButton({
-            index           = 2,-- (obligatoire),
+            index           = 2,        -- (obligatoire)
             click_function  = 'pickFromDeck',
             label           = 'Piocher',
             height          = 600,
@@ -143,16 +147,21 @@ function addPickButton(card)
 end
 
 
--- la fonction issue de ce bouton, avec les 2 arguments par défaut cités plus haut.
+-- la fonction cliquable issue de ce bouton, avec les 2 arguments : objet, couleur du joueur
+-- on procède en 3 étapes
+    -- 1) on sait quelle carte est cliquée, et qui a cliqué. On peut donc donner la carte à un joueur avec deal()
+    -- NB : deal() marche aussi bien sur une carte seul que sur un deck, contrairement a takeObject()
+    -- 2) on pense à retirer tout bouton de cette carte avant de l'envoyer en main avec clearButtons()
+    -- 3) on ajoute par exemple une fonction qui va nettoyer l'offre de cartes une fois celle-ci choisie
+        -- 3a) enlever tous les boutons des cartes
+        -- 3b) placer les cartes dans la défausse
 function pickCard(card, color)
-    -- on sait quelle carte est cliquée, et qui a cliqué. Facile de l'attribuer à un joueur donc.
     card.deal(1,color)
-    -- on pense à retirer tout bouton de cette carte avant de l'envoyer en main
     card.clearButtons()
-    -- ici on ajoute par exemple une fonction qui va nettoyer l'offre de cartes une fois celle-ci choisie
     Wait.time(function ()
         local objects = zone_game.getObjects()
-        local position = deck1.positionToWorld({3, 1, 0})
+        -- local position = deck1.positionToWorld({3, 1, 0})
+        local position = deck1.getPosition() + Vector({3, 1, 0})
         for index, obj in ipairs(objects) do
             obj.clearButtons()
             obj.setPositionSmooth(position)
@@ -161,13 +170,13 @@ function pickCard(card, color)
 end
 
 
--- (cours 02)
+-- (cf cours_tts_02.lua)
 function shuffleDeck()
     deck1.shuffle()
 end
 
 
--- (cours 02)
+-- (cf cours_tts_02.lua)
 function takeCardFromDeck1()
     local params = {}
     params.position = deck1.getPosition()
@@ -177,7 +186,7 @@ function takeCardFromDeck1()
 end
 
 
---cette petite fonction regroupe les cartes d'une zone dans un même deck
+-- cette petite fonction regroupe les cartes d'une zone dans un même deck
 -- on ne s'en sert pas mais je voulais la montrer
 function groupCards(zone)
     local objects = zone.getObjects()

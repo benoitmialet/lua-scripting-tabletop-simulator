@@ -2,7 +2,6 @@
 
 
 ## Apprendre à scripter
-
 Ce dossier rassemble 8 cours pour apprendre à scripter vos modules Tabletop Simulator (TTS) en LUA. Chaque cours correspondant à 1 feuille de script commenté, et est basé sur un ou deux aspects de programmation. Vous apprendrez les méthodes de base pour effectuer des mises en place automatisées de vos jeux. Il est conseillé de se renseigner sur les concepts de base en programmation, comme par exemple :
 
 * Qu'est ce qu'une variable ? une méthode ou une fonction ?
@@ -13,7 +12,6 @@ Ce dossier rassemble 8 cours pour apprendre à scripter vos modules Tabletop Sim
 
 
 ## L'éditeur de code
-
 Il est quasi indispensable d'utiliser un éditeur de code. Cela sert à bien **indenter** son code (l'aligner pour mieux le lire et éviter des fautes), et à faire de la **reconnaissance synthaxique** (colorer son code pour mieux le lire, indispensable). Je conseille très fortement Visual Studio Code (gratuit). Installez les plugins suivants sous VSCode en cliquant sur "extensions": 
 * Lua (sumneko)
 * Tabletop Simulator Lua (Rolandostar)
@@ -44,3 +42,6 @@ Vous pouvez maintenant utiliser les scripts des cours #1 à #8. Chacun de ces co
 Il faudra de la patience et vous exercer avec vos propres modules. **Commencez avec peu d'ambition**, en suivant les cours. Trop de fonctionnalités d'un coup peut porter à confusion dans le code et vous décourager.
 A vous de jouer !
 
+
+## Fonctions génériques
+Les dossier "Generic functions" (commentaires en anglais) met à disposition des fonctions pratiques et régulièrement utiles dans des modules. Vous pourrez les explorer une fois les cours parcourus.

@@ -28,15 +28,6 @@ end
 
 --PLAYERS ----------------------------------------------------------------------------------------------------
 
--- [ACME] Build a player table (array [color] => [value]) in global that can be used in several ACME functions
-function buildPlayerTable()
-    local player_colors = getSeatedPlayers()
-    player_table = {}
-    for _, color in ipairs(player_colors) do
-        player_table[color] = {}
-    end
-end
-
 -- [ACME] draw 1st player randomly (then store first_player_color in Global)
 function firstPlayer()
     local table_seated_players = getSeatedPlayers()

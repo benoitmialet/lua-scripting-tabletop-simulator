@@ -1,11 +1,11 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /07
--- MAJ 27/07/2022
+-- MAJ 07/08/2022
 -- Objectifs:
     -- Créer quelques fonctions utiles soi-même :
         -- Contrôler que tous les joueurs soient assis avant de démarrer une partie
         -- Désigner aléatoirement un premier joueur
-    -- Utiliser des fonctions de déplacement d'objets avancées
+    -- Découvrir d'autres fonctions alternatives de positionnement et de déplacement d'objets 
 ----------------------------------------------------------------------------------------------------
 
 button_setup_guid = '0926c8'
@@ -14,22 +14,16 @@ cube_bleu_guid = 'afa021'
 cube_rouge_guid = '939c55'
 
 function onLoad()
-
     button_setup = getObjectFromGUID(button_setup_guid)
     deck1 = getObjectFromGUID(deck1_guid)
     cube_bleu = getObjectFromGUID(cube_bleu_guid)
     cube_rouge = getObjectFromGUID(cube_rouge_guid)
 
-    -- NOUVEAU : pour info, on peut tester la présence d'un objet sans passer par la donnée sauvegardée
-    -- ATTENTION : ce un raccourci ne marchera que dans onLoad()
-    if button_setup then
-        activateButtonSetup()
-    end
+    spawnSetupButtons()
 
-    -- NOUVEAU : on créé ce bouton pour déplacer le cube (gadget)
     cube_bleu.createButton({
-        click_function = "moveCube", -- la fonction qui va être déclenchée en cliquant sur le bouton
-        function_owner = Global, --où se trouve cette fonction (ici, dans l'environnement global)
+        click_function = "moveCube",
+        function_owner = Global,
         label          = "Boing!",
         height          = 300,
         width           = 800,
@@ -38,20 +32,10 @@ function onLoad()
         position        = {0, 1, 0},
         rotation        = {0, 180, 0}
     })
-
-    -- Position des cartes sur la table
-    position_card = {
-        {-13.49, 1.04, 3.5},
-        {-10.5, 1.04, 3.5},
-        {-7.51, 1.04, 3.5},
-        {-4.5, 1.04, 3.5},
-        {-1.5, 1.04, 3.5},
-        {1.5, 1.04, 3.5}
-    }
 end
 
 --activation du bouton de mise en place
-function activateButtonSetup()
+function spawnSetupButtons()
     button_setup.createButton({
         click_function = "setupTable",
         function_owner = Global,
@@ -66,64 +50,63 @@ function activateButtonSetup()
 end
 
 
--- NOUVEAU : Deux fonctions customisées, d'autres fonctions de déplacement
-    --cette fonction est tirée du cours 03. On va la compléter.
+-- la fonction setupTable() est tirée du cours 03. On va la modifier avec :
+    -- une fonction testColors() pour vérifier que tous les joueurs soient assis avant de démarrer
+        -- un false est retourné si au moins un joueur n'est pas assis (voir plus bas)
+        -- la fonction setupTable est alors interrompue par le return 0
+    -- un autre exemple de disposition de carte, basée sur le calcul
+        -- c'est plus compliqué à faire mais ne nécessite pas de créer la table position_card au préalable
+        -- c'est donc préférable s'il y a beaucoup de positions à couvrir avec des espacements réguliers.
+        -- ici on distribue par exemple des cartes sur 3 rangée et 6 colonnes
+        -- il faut pour cela créer une boucle (les colonnes) à l'intérieur d'une autre boucle (les lignes)
+        -- on part de la position du deck décalée de 20 unités vers la gauche
+        -- on décale de 3 vers la droite à chaque boucle sur la même ligne
+        -- on revient à la ligne en décalant de 18 vers la gauche et 4 vers le bas
+    -- une fonction firstPlayer() pour déterminer le premier joueur (voir plus bas)
+-- POSITIONTOWORLD
+    -- positionToWorld() définit une position
+    -- elle prend la position de l'objet, et y ajoute un Vector
+    -- c'est exactement comme additionner la position + un Vector (voir les cours précédents)
 function setupTable()
-    -- NOUVEAU : avant de lancer la partie, on veut vérifier que tous les joueuses et joueurs soient assis
-    -- on créée pour cela nous même une fonction qui renvoie un résultat :
-        -- true si tout le monde est assis
-        -- false si au moins un joueur n'est pas assis. La fonction setupTable est alors interrompue par le return
+
     if testColors()==false then return 0 end
 
-    -- Jusqu'ici on utilisait l'écriture suivante pour placer les cartes
-    -- Elle nécessite de créer la table position_card au préalable
-    for i, position in ipairs(position_card) do
-        local params = {}
-        params.position = position
-        params.rotation = {0, 180, 0}
-        -- on commente cette ligne pour la désactiver.
-        -- deck1.takeObject(params)
-    end
-
-    -- NOUVEAU : Voici un autre exemple de disposition de carte, basée sur le calcul, qui fonctionne toute seule
-    -- on part de la position du deck que l'on va décaler de 20 unités vers la gauche à chaque boucle
-    -- positionToWorld() prend la position de l'objet, et y ajoute un vecteur de position
-    -- ici on veut partir de 20 unités à gauche du paquet de cartes:
-    local pos = deck1.positionToWorld({-20, 0, -7})
-    -- on distribue par exemple des cartes sur 3 rangée et 6 colonnes
-        -- il faut pour cela créer une boucle (les colonnes) à l'intérieur d'une autre boucle (les lignes)
+    local pos = deck1.positionToWorld({-20, -1, -7})
     for i = 1, 3 do
         for i = 1, 6 do
             local params = {}
             params.position = pos
             params.rotation = {0, 180, 0}
             deck1.takeObject(params)
-
-            pos = pos + Vector({3, 1, 0})
+            pos = pos + Vector({3, 0, 0})
         end
-        pos = pos + Vector({-18, 1, -4})
+        pos = pos + Vector({-18, 0, -4})
     end
-
-    -- NOUVEAU : On détermine le premier joueur
+    button_setup.clearButtons()
     firstPlayer()
 end
 
 
--- NOUVEAU : cette fonction fait juste retourner et déplacer un cube mais elle montre d'autres moyens de le faire
+-- cette fonction fait simplement retourner et déplacer des cubes mais elle montre d'autres moyens de le faire
+    -- cf cours_tts_01.lua pour translate()
+-- FLIP
+    -- flip() retourne une carte
+    -- elle est simple d'utilisation, mais met fin à tout mouvement si elle est placée après lui
+-- TRANSLATE
+    -- translate() décale l'objet suivant un vecteur (ici de 3 unités vers la gauche et de 2 en hauteur), 
+    -- peu utilisé mais simple et pratique
+    -- là aussi cela revient au même que d'utiliser setPositionSmooth() + un Vector
 function moveCube()
-    -- flip() est simple d'utilisation, mais elle met fin à tout mouvement si elle est placée après lui
     cube_rouge.flip()
-
-    -- translate() déplace un objet par rapport à sa position initiale. Très pratique
-    -- on donne un vecteur en paramètre et le déplacement résultera de l'addition de ce vecteur à la position initiale de l'objet.
     cube_bleu.translate({-3, 2, 0})
 end
 
 
--- NOUVEAU : tester que tous les joueurs soient assis à une couleur valide, ou spectateurs
--- cela éviter que des scripts d'installation échouent leur exécution
--- renvoie une valeur true ou false
--- requiert la fonction hasValue()
+-- VERIFIER QUE TOUS LES JOUEURS SOIENT ASSIS
+    -- on créé testColors() pour tester si tous les joueurs sont assis à une couleur valide, ou spectateurs
+    -- cela évite que des scripts d'installation ne se lancent avant que tout les joueurs soient prêts
+    -- renvoie une valeur true ou false
+    -- requiert la fonction hasValue()
 function testColors()
     for key, color in pairs(getSeatedPlayers()) do
         if hasValue(Player.getAvailableColors(),color) then
@@ -135,7 +118,7 @@ function testColors()
     return true
 end
 
--- (voir cours 05)
+-- (voir cours_tts_05.lua)
 function hasValue (tab, val)
     for index, value in ipairs(tab) do
         if value == val then
@@ -145,7 +128,9 @@ function hasValue (tab, val)
     return false
 end
 
--- NOUVEAU : déterminer aléatoirement le 1er joueur (et stocker l'information dans la variable first_player_color)
+-- DETERMINER ALEATOIREMENT LE PREMIER JOUEUR
+    -- on créé firstPlayer() pour déterminer aléatoirement le 1er joueur
+    -- l'information est stockée dans la variable globale first_player_color
 function firstPlayer()
     local table_seated_players = getSeatedPlayers()
     local random = math.random(#table_seated_players)
