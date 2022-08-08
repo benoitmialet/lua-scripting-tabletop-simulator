@@ -91,6 +91,16 @@ function setupTable()
     destructMissingPlayers()
 end
 
+
+--AJOUTER DES ARGUMENTS A UNE FONCTION DEPUIS UN BOUTON
+    -- nous avons vu que ce n'était pas possible. Voici un moyen de le contourner
+    -- il suffit de créer des fonctions intermédiaires qui renverront vers la fonction principale
+    -- c'est aussi simple que cela
+    -- l'avantage est que la fonction principale est générique et peut être réutilisée
+function pickCardFromZoneDeck()
+    pickCardFromZone(zone_deck)
+end
+
 -- PIOCHER DES ELEMENTS DEPUIS UNE ZONE
     -- on modifie la fonction de scours précédents pour piocher depuis une zone.
     -- quelle utilité ?
@@ -124,8 +134,8 @@ end
     -- elseif rajoute une condition si la précédente n'est pas vérifiée.
     -- else finit un test if et indique ce qu'il faut faire si aucune condition n'est vérifiée
     -- si ... sinon si ... sinon ... alors
-function pickCardFromZoneDeck()
-    local objects = zone_deck.getObjects()
+function pickCardFromZone(zone)
+    local objects = zone.getObjects()
     for i, obj in ipairs(objects) do
         if obj.type == 'Deck' then
             local params = {}
@@ -134,7 +144,7 @@ function pickCardFromZoneDeck()
             obj.takeObject(params)
         elseif obj.type == 'Card' then
             obj.setRotationSmooth({0, 180, 0})
-            obj.translate({3, 0.5, 0})
+            obj.translate({3, 1, 0})
         end
     end
 end

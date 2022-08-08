@@ -61,7 +61,7 @@ end
 -- MISE EN PLACE AVEC DES CONDITIONS
     -- on distribue les cartes aux joueurs (voir cours_tts_03.lua)
     -- on ajoute maintenant une condition :
-        -- "si" le nombre de joueurs est inférieur ou égal à 4, "alors" on défausse 3 cartes du deck.
+        -- "si" le nombre de joueurs est inférieur ou égal à 3, "alors" on défausse 5 cartes du deck.
         -- ne jamais oublier de refermer un if avec un end
 function setupPlayers()
     nb_cards_to_deal = {4, 3, 2, 2, 1}
@@ -79,14 +79,14 @@ end
     -- on ajoute une condition
 -- EVITER UN BUG SI UN DECK N'EXISTE PLUS OU S'IL RESTE 1 CARTE
     -- s'il reste 1 carte, l'objet n'est plus un deck mais une carte.
-    -- takeObject sur 1 carte seule n'existe pas
+    -- takeObject sur 1 carte seule ne fonctionnera pas et renverra une erreur
     -- on vérifie donc d'abord si le deck existe
     -- c'est une sécurité courante pour éviter de faire bugger un script
     -- Pour cela, on teste si getObjectFromGUID() retourne "quelque chose":
         -- "si oui", on ne fait rien... La fonction continue son cours. C'est le rôle de "then else"
         -- "sinon", on l'interromp avec "return 0" (on retourne un résultat, peu importe lequel, cela stoppe la fonction)
+        -- if getObjectFromGUID(deck1_guid) est la même chose que if getObjectFromGUID(deck1_guid) == true
         -- cela peut porter à confusion, bien relire ce qui suit et et s'y habituer !
-
 function takeCardFromDeck1()
     if getObjectFromGUID(deck1_guid) then
     else
@@ -112,7 +112,7 @@ end
         -- on ajoute le GUID de la carte pour piocher celle-ci spécifiquement (et pas la première venue)
         -- cela marcherait aussi bien en prenant l'index de la carte dans la liste des objets détectés plutot que le guid
         -- params.index = object.index
-    -- 5) Apres avoir trouvé une reine, on interromp la boucle, sinon toutes les reines seront piochées
+    -- 5) Apres avoir trouvé une reine, on interromp la boucle avec break, sinon toutes les reines seront piochées
 -- La fonction GETOBJECTS
     -- getObjects() liste les objets contenus dans une zone ou un conteneur (sac, deck...)
     -- Elle retourne une table que l'on récupère pour la parcourir
@@ -123,8 +123,7 @@ function pickQueenFromDeck1()
     for index, object in ipairs(cards) do
         if object.name == 'reine' then
             local params = {}
-            params.position = deck1.getPosition()
-            params.position = params.position + Vector({3, 1, 0})
+            params.position = deck1.getPosition() + Vector({3, 1, 0})
             params.rotation = {0, 180, 0}
             params.guid = object.guid
             deck1.takeObject(params)

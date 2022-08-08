@@ -369,65 +369,113 @@ function onScriptingButtonDown(index, color)
 end
 
 -----[ACME] Automatic ressource couting on 1 tile------------------------------------------------------------------
-    --requires to put following in function onLoad():
-        -- countingTile()
-        -- CountResources()
-        -- RESSOURCE COUNTING PARAMETERS---------------------------------------
-            countingTileObject = getObjectFromGUID('2db651')
-            zoneCapture = getObjectFromGUID('fd0323')
-            nameResource1='rosbeef'     colorResource1 = 'Red'
-            nameResource2='bois'        colorResource2 = 'Brown'
-            nameResource3='pierre'      colorResource3 = 'Grey'
-        ------------------------------------------------------------------------
-    function countingTile()
-        countingTileObject.createButton({
-            click_function='doNothing', function_owner=Global, label = '0', font_color = colorResource1,
-            position={-1.6,0.1,0.9}, height=0, width=0, font_size = 120 })
-        countingTileObject.createButton({
-            click_function='doNothing', function_owner=Global, label = '0', font_color = colorResource2,
-            position={-1.6,0.1,1.1}, height=0, width=0, font_size = 120 })
-        countingTileObject.createButton({
-            click_function='doNothing', function_owner=Global, label = '0', font_color = colorResource3,
-            position={-1.6,0.1,1.3}, height=0, width=0, font_size = 120 })
-    end
+    --requires to put some code in function onLoad()
 
-    function onObjectEnterScriptingZone(zone, enter_object)
-        if zone.guid == zoneCapture.guid then
-            local name = enter_object.getName()
-            if name == nameResource1 or name == nameResource2 or name == nameResource3 then
-                CountResources(name)
-            end
+-- function onLoad()
+    -------------------------------------------------------------------------------------------------
+    -- COUNTING TILE PARAMETRES (PUT THIS AT THE END OF ONLOAD)
+    -------------------------------------------------------------------------------------------------
+    counting_tile_params = {
+        guid = 'cf92d0',                    --mandatory
+        label_position = {0, 0.5, 0.4},
+        font_size = 50,
+        label_spacing = 0.2,                -- vertical spacing between 2 labels
+        turn_180 = false                    -- wheter turns or not label position and rotation 180° vertically 
+    }
+    table_ressources = {
+        {name = 'monnaie1', color = 'Red', tooltip = "Pièces rouges"},
+        {name = 'monnaie2', color = 'Blue', tooltip = ""}
+    }
+    activateCountingTile()
+-------------------------------------------------------------------------------
+-- end
+
+-------------------------------------------------------------------------------------------------
+-- COUNTING TILE FUNCTIONS 
+-------------------------------------------------------------------------------------------------
+function activateCountingTile()
+    counting_tile_object = getObjectFromGUID(counting_tile_params.guid)
+    table_names = {}
+    local position = Vector(counting_tile_params.label_position)
+    local rotation = {0, 180, 0}
+    if counting_tile_params.turn_180 then 
+        rotation = {0, 0, 0}
+        counting_tile_params.label_spacing = - counting_tile_params.label_spacing
+    end
+    for _, ressource in ipairs(table_ressources) do
+        local space = ""
+        if ressource.tooltip ~= "" then space = " : " end
+        counting_tile_object.createButton({
+            click_function='doNothing',
+            function_owner=Global,
+            label = ressource.tooltip .. space ..'0',
+            font_color = ressource.color,
+            position = position,
+            rotation = rotation,
+            height=0,
+            width=0,
+            font_size = counting_tile_params.font_size
+        })
+        table.insert(table_names, ressource.name)
+        position.z = position.z - counting_tile_params.label_spacing
+    end
+    zone_capture = spawnObject({
+        type              = "ScriptingTrigger", -- zone de script
+        position          = counting_tile_object.getPosition() + Vector({0, 1, 0}),
+        rotation          = counting_tile_object.getRotation(),
+        scale             = counting_tile_object.getBounds().size + Vector({0, 3, 0}),
+    })
+end
+
+function doNothing()
+end
+
+function onObjectEnterScriptingZone(zone, enter_object)
+    if zone.guid == zone_capture.guid then
+        local name = enter_object.getGMNotes()
+        if hasValue(table_names, name) then
+            CountResources(name)
         end
     end
+end
 
-    function onObjectLeaveScriptingZone(zone, enter_object)
-        if zone.guid == zoneCapture.guid then
-            local name = enter_object.getName()
-            if name == nameResource1 or name == nameResource2 or name == nameResource3 then
-                CountResources(name)
-            end
+function onObjectLeaveScriptingZone(zone, enter_object)
+    if zone.guid == zone_capture.guid then
+        local name = enter_object.getGMNotes()
+        if hasValue(table_names, name) then
+            CountResources(name)
         end
     end
+end
 
-    function CountResources(name)
-        local zoneObjects = zoneCapture.getObjects()
-        local resource1 = 0
-        local resource2 = 0
-        local resource3 = 0
-        for i, object in ipairs(zoneObjects) do
-            if object.getName() == nameResource1 then
-                resource1 = resource1 + 1
-            elseif object.getName() == nameResource2 then
-                resource2 = resource2 + 1
-            elseif object.getName() == nameResource3 then
-                resource3 = resource3 + 1
-            end
-        end
-        countingTileObject.editButton({ index = 0, label = "" .. resource1 })
-        countingTileObject.editButton({ index = 1, label = "" .. resource2 })
-        countingTileObject.editButton({ index = 2, label = "" .. resource3 })
+function CountResources(name)
+    local zoneObjects = zone_capture.getObjects()
+    for _, ressource_name in ipairs(table_names) do
+        local varname = "nb_" .. tostring(ressource_name)
+        _G[varname] = 0
     end
------[END OF] Automatic ressource couting on a tile -----------------------------------
+    for _, object in ipairs(zoneObjects) do
+        if hasValue(table_names, object.getGMNotes()) then
+            local varname = "nb_" .. tostring(object.getGMNotes())
+            _G[varname] = _G[varname] + 1
+        end
+    end
+    for i, ressource in ipairs(table_ressources) do
+        local space = ""
+        if ressource.tooltip ~= "" then space = " : " end
+        counting_tile_object.editButton({ index = i-1, label = ressource.tooltip .. space .. _G["nb_" .. tostring(ressource.name)] })
+    end
+end
+
+function hasValue (tab, val)
+    for index, value in ipairs(tab) do
+        if value == val then
+            return index
+        end
+    end
+    return false
+end
+-----[END OF] Automatic ressource couting on a tile ---------------------------------------------
 
 
 -- [ACME] AUTOMATIC PLAYER RESOURCE COUNTING--------------------------------------------------------------------------

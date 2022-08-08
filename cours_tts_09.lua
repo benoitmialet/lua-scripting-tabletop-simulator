@@ -40,7 +40,8 @@ end
     -- les boutons servent simplement à afficher le nombre de ressources (1 affichage par ressource)
     -- on pourrait créer une boucle pour initialiser ces boutons, mais le but ici est de faire simple,
     -- pour comprendre le principe général. 
-    -- Une boucle sera conseillée si le nombre de ressources différentes est important.
+    -- pour utiliser une meilleure version, plus complexe mais plus simple à iplémenter,
+    -- voir le fichier GENERIC_FUNCTIONS.lua dans le dossier useful_functions 
 -- GENERER UN OBJET
     -- spawnObject() permet de générer un objet qui n'existe pas encore
     -- il existe une multitude d'objets possibles, on peut même leur donner des attributs
