@@ -13,13 +13,16 @@
     -- qui entrent ou qui sortent de cette zone, puis afficher les compteurs sur un bouton.
 -- on va devoir pour cela :
     -- créer des boutons sur la tuile de comptage pour afficher la quantité de ressources 
-    -- Générer une zone au dessus de la tuile de comptage pour détecter  les ressources
+    -- Générer une zone au dessus de la tuile de comptage pour détecter les ressources
     -- Utiliser des fonctions d'évenement (entrée / sortie des ressources dans la zone) pour 
     -- augmenter ou diminuer le compteur de ressources
     -- mettre à jour les boutons d'affichage
 -- notre tuile de comptage sera par exemple le plateau du joueur vert.
 -- essayez de placer des jetons de monnaie sur le plateau et regardez le compteur.
 -- NB : ce code est facilement transportable sur vos modules.
+    -- pour utiliser une meilleure version de la tuile, plus complexe mais plus simple à iplémenter,
+    -- copiez le code du fichier COUNTING_TILE.lua (dossier useful_functions) dans un objet plat
+
 counting_tile_guid = 'cf92d0'
 
 function onLoad()
@@ -40,8 +43,7 @@ end
     -- les boutons servent simplement à afficher le nombre de ressources (1 affichage par ressource)
     -- on pourrait créer une boucle pour initialiser ces boutons, mais le but ici est de faire simple,
     -- pour comprendre le principe général. 
-    -- pour utiliser une meilleure version, plus complexe mais plus simple à iplémenter,
-    -- voir le fichier GENERIC_FUNCTIONS.lua dans le dossier useful_functions 
+
 -- GENERER UN OBJET
     -- spawnObject() permet de générer un objet qui n'existe pas encore
     -- il existe une multitude d'objets possibles, on peut même leur donner des attributs
