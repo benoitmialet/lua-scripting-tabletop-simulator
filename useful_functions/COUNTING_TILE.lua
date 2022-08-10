@@ -12,20 +12,14 @@ function onSave()
     return saved_data
 end
 
-function onload(saved_data)
+function onLoad(saved_data)
     if saved_data ~= "" then
         game_data = JSON.decode(saved_data)
     end
-    -- destroy zone_capture from previous save
-    if game_data.zone_capture_guid then
-        getObjectFromGUID(game_data.zone_capture_guid).destruct()
-    end
-end
 
-function onLoad()
--------------------------------------------------------------------------------------------------
--- COUNTING TILE PARAMETERS (PUT THIS AT THE END OF ONLOAD)
--------------------------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------------------------
+    -- COUNTING TILE PARAMETERS (PUT THIS AT THE END OF ONLOAD)
+    -------------------------------------------------------------------------------------------------
     counting_tile_params = {
         label_position = {0, 1, 0.4},
         font_size = 60,
@@ -37,14 +31,14 @@ function onLoad()
         {name = 'blue', color = 'Blue', tooltip = ""}
     }
     activateCountingTile()
--------------------------------------------------------------------------------
+    -------------------------------------------------------------------------------
 end
-
 
 -------------------------------------------------------------------------------------------------
 -- COUNTING TILE FUNCTIONS 
 -------------------------------------------------------------------------------------------------
 function activateCountingTile()
+    destructOldZone()
     table_names = {}
     local position = Vector(counting_tile_params.label_position)
     local rotation = {0, 180, 0}
@@ -72,34 +66,23 @@ function activateCountingTile()
     spawnZoneCapture()
 end
 
+function destructOldZone()
+    -- destroy zone_capture from previous save
+    if getObjectFromGUID(game_data.zone_capture_guid) then
+        getObjectFromGUID(game_data.zone_capture_guid).destruct()
+    end
+end
+
 function spawnZoneCapture()
     zone_capture = spawnObject({
         type              = "ScriptingTrigger", -- zone de script
-        position          = self.getPosition() + Vector({0, 1, 0}),
+        position          = self.getPosition() + Vector({0, 0.5, 0}),
         rotation          = self.getRotation(),
-        scale             = self.getBounds().size + Vector({0, 3, 0}),
+        scale             = self.getBounds().size:scale(Vector({0.95, 0, 0.95}))+Vector({0, 3, 0}),
     })
 end
 
 function doNothing()
-end
-
-function onObjectEnterScriptingZone(zone, enter_object)
-    if zone.guid == zone_capture.guid then
-        local name = enter_object.getName()
-        if hasValue(table_names, name) then
-            CountResources(name)
-        end
-    end
-end
-
-function onObjectLeaveScriptingZone(zone, enter_object)
-    if zone.guid == zone_capture.guid then
-        local name = enter_object.getName()
-        if hasValue(table_names, name) then
-            CountResources(name)
-        end
-    end
 end
 
 function CountResources(name)
@@ -130,10 +113,36 @@ function hasValue (tab, val)
     return false
 end
 
+
+function onObjectEnterScriptingZone(zone, enter_object)
+    if zone.guid == zone_capture.guid then
+        local name = enter_object.getName()
+        if hasValue(table_names, name) then
+            CountResources(name)
+        end
+    end
+end
+
+function onObjectLeaveScriptingZone(zone, enter_object)
+    if zone.guid == zone_capture.guid then
+        local name = enter_object.getName()
+        if hasValue(table_names, name) then
+            CountResources(name)
+        end
+    end
+end
+
 function onPickUp()
-    zone_capture.destruct()
+    -- zone_capture.destruct()
+    if getObjectFromGUID(zone_capture.guid) then
+        getObjectFromGUID(zone_capture.guid).destruct()
+    end
 end
 
 function onDrop()
     spawnZoneCapture()
+end
+
+function onDestroy()
+    zone_capture.destruct()
 end

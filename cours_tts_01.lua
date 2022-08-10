@@ -10,17 +10,18 @@
 --quelques bonnes habitudes
     --1) rendre le code lisible : bien indenter, revenir à la ligne souvent
     --2) nommer les variables et fonctions en anglais
-        -- écrire les fonctions en "CamelCase" : countNumberOfTiles()
+        -- écrire les fonctions en "camelCase" : countNumberOfTiles()
         -- écrire les variables en "lower case" : my_variable,  nb_tiles,...
     --3) la page (API) contenant toutes les fonctions et attributs rattachés aux objets
-        -- N.B.: vous ne pourrez pas coder sur TTS sans consulter ce site !
+        -- BIEN NOTER : VOUS NE POURREZ PAS CODER SUR TTS SANS CONSULTER CE SITE !
         -- https://api.tabletopsimulator.com/object/
 
 
--- A VOIR ABSOLUMENT AVANT DE COMMENCER A CODER ! (au moins prendre connaissance):
-    -- qu'est ce qu'une variable, une fonction (ou méthode), des arguments (ou paramètres). regarder quelques exemples en LUA.
+-- NOTIONS A VOIR ABSOLUMENT AVANT DE COMMENCER A CODER ! (au moins en prendre connaissance):
+    -- qu'est ce qu'une variable, une fonction (ou méthode), des arguments (ou paramètres). 
+        -- regarder quelques exemples en LUA.
     -- qu'est ce que le langage orienté objet. Qu'est ce qu'un objet, un attribut ou une fonction de l'objet.
-    -- qu'est ce qu'une boucle "for" et est test "if"
+    -- qu'est ce qu'une boucle "for" et un test "if"
     -- qu'est ce qu'une table, un index
 
 
