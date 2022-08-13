@@ -70,7 +70,7 @@ end
 -- [ACME] Check that selected nb of players = nb of seated players
     -- ONLY for modules asking to select number of players in a menu or UI
     -- requires : add in 1st line of function setup() : if testSeated()==false then return 0 end
-function testSeated()
+function testSeated(nb_players)
     if #getSeatedPlayers() ~= nb_players then
         broadcastToAll('Tous les joueurs ne sont pas encore assis (choisissez une couleur)')
         return false
@@ -78,17 +78,17 @@ function testSeated()
     return true
 end
 
--- [ACME] Set a play order (anti clockwise) starting from 1st player.
+-- [ACME] Set a play order starting from 1st player.
     -- requires :
         -- first_player() must be ran before
     -- arguments:
-        -- player_table: array [color] => [value], but with the same order as hands around the play table.
+        -- table_players: array [color] => [value], with the right play order.
     -- Returns a table table_turn_order [index] => [color]
-function getTurnOrder(player_table)
+function getTurnOrder(table_players)
     -- create a table storing player colors
     local player_index = {}
     local first_player_index = nil
-    for color, v in pairs(player_table) do
+    for color, _ in pairs(table_players) do
         if Player[color].seated then
             table.insert(player_index,color)
         end
@@ -103,7 +103,7 @@ function getTurnOrder(player_table)
     local table_turn_order = {}
     for a = first_player_index, #player_index do
         table.insert(table_turn_order,player_index[a])
-        if player_index[first_player_index] == player_table[#player_table] then
+        if player_index[first_player_index] == table_players[#table_players] then
             break
         end
     end
@@ -116,17 +116,17 @@ end
 
 -- destruct missing players objects
     -- arguments:
-        -- player_table: array [key] => value, with following information for each player color:
-            -- player_table = {
+        -- table_players: array [key] => value, with following information for each player color:
+            -- table_players = {
             --     [color] = {
             --         zone = getObjectFromGUID(''),   -- zone containing all players objects
             --     }
             -- }
-function destructMissingPlayers(player_table)
+function destructMissingPlayers(table_players)
     local seated_players = getSeatedPlayers()
-    for color, _ in pairs(player_table) do
+    for color, _ in pairs(table_players) do
         if hasValue(seated_players, color) then else
-            local objects = player_table[color].zone.getObjects()
+            local objects = table_players[color].zone.getObjects()
             for index, obj in ipairs(objects) do
                 obj.destruct()
             end
@@ -135,40 +135,21 @@ function destructMissingPlayers(player_table)
 end
 
 
-
 -- [ACME] Append players hand position and rotation vectors to a table with player color as keys
     -- arguments:
-        -- player_table: table [index] => [color], with following information for each player color:
-            -- player_table = {
+        -- table_players: table [index] => [color], with following information for each player color:
+            -- table_players = {
             --     [color] = {
             --         objects = {getObjectFromGUID(''),}   -- table containing players objects
             --     }
             -- }
-function appendHandsInfo(player_table)
-    for color, _ in pairs(player_table) do
+function appendHandsInfo(table_players)
+    for color, _ in pairs(table_players) do
         local Playerinfo = Player[color].getHandTransform(1)
-        player_table[color].hand_position = Playerinfo.position
-        player_table[color].hand_rotation = Playerinfo.rotation
+        table_players[color].hand_position = Playerinfo.position
+        table_players[color].hand_rotation = Playerinfo.rotation
     end
 end
-
--- [ACME] deal to each player its game elements. uses relative position of player hands
-    -- arguments:
-        -- player_table: table [color] => value, with following information for each player color:
-            -- player_table = {
-            --     [color] = {
-            --         objects = {getObjectFromGUID(''),}   -- table containing players objects
-            --     }
-            -- }
-        -- object_position: table containing position vectors
-    function dealPlayerObjects(player_table, object_position)
-        for color, _ in pairs(player_table) do
-            for i, _ in ipairs(object_position) do
-                player_table[color].object[i].setPositionSmooth(vecSum(player_table[color].hand_position, object_position[i]))
-                player_table[color].object[i].setRotationSmooth(player_table[color].hand_rotation)
-            end
-        end
-    end
 
 
 --TABLES----------------------------------------------------------------------------------------------------
@@ -186,22 +167,14 @@ function hasValue (tab, val)
     return false
 end
 
--- [ACME] Returns table length
-function tableLength(T)
-    local count = 0
-    for _ in pairs(T) do count = count + 1 end
-    return count
-end
-
--- [ACME] Shufflle a table
+-- [ACME] Shuffle a table
 function shuffle(t)
     for i = 1, #t - 1 do
         local r = math.random(i, #t)
         t[i], t[r] = t[r], t[i]
     end
+    return t
 end
-
-
 
 -- [Author ?] print deep content of a table (like PHP print_r method)
 function print_r (t, indent, done)
@@ -223,28 +196,6 @@ function print_r (t, indent, done)
     end
     end
 end
-
-
---VECTORS----------------------------------------------------------------------------------------------------
-
--- [ACME] Add 2 vectors
-function vecSum(vec1,vec2)
-    return {vec1[1]+vec2[1], vec1[2]+vec2[2],  vec1[3]+vec2[3]}
-end
-
--- [ACME] Substract: vector1 - vector2
-function vecDif(vec1,vec2)
-    return {vec1[1]-vec2[1], vec1[2]-vec2[2],  vec1[3]-vec2[3]}
-end
-
--- [ACME] Replace 1 ore more values of a vector
-function vecReplace (vec1,X,Y,Z)
-    if X ~= 0 then vec1[1]=X end
-    if Y ~= 0 then vec1[2]=Y end
-    if Z ~= 0 then vec1[3]=Z end
-    return {vec1[1], vec1[2],  vec1[3]}
-end
-
 
 
 --CARDS/OBJECTS----------------------------------------------------------------------------------------------
@@ -274,24 +225,25 @@ function takeFromZone(zone, position, rotation)
     end
 end
 
-
-function findContainer(zone)
+-- [ACME] Returns first card or deck object found in a zone, or nil
+function getCardOrDeck(zone)
     local objects = zone.getObjects()
-    for key, obj in ipairs(objects) do
-        if obj.tag == 'Infinite' or obj.tag == 'Bag' or obj.tag == 'Deck' then
+    for key, obj in pairs(objects) do
+        if obj.tag == 'Card' or obj.tag == 'Deck' then
             return obj
         end
     end
+    return nil
 end
 
 -- [ACME] search for an object in a container with name of the object then returns its GUID
 -- Arguments:
     -- container: object
     -- name: string
-function findGuid(container, name)
+function findGuid(container, obj_name)
     local objects = container.getObjects()
     for key, obj in ipairs(objects) do
-        if obj.name == name then
+        if obj.name == obj_name then
             return obj.guid
         end
     end
@@ -303,26 +255,15 @@ end
         -- getCardOrDeck()
         -- takeFromZone()
     -- Arguments:
-        -- zoneToDraw: zone object. Zone from where cards will be drawn
-        -- zoneGroup: array of zone objects, like {zone1, zone2, zone3}, corresponding to slots to fill
-        -- positionGroup: array of zone positions, like {pos1, pos2, pos3}, corresponding to slots to fill
-function refillOfferFromZone(zoneToDraw,zoneGroup,positionGroup)
-    for i=1, #zoneGroup do
-        if getCardOrDeck(zoneGroup[i]) == nil then
-            takeFromZone(zoneToDraw, positionGroup[i], {0,180,0})
+        -- zone_to_draw: zone object. Zone from where cards will be drawn
+        -- table_zones: array of zone objects, like {zone1, zone2, zone3}, corresponding to slots to fill
+        -- table_positions: array of zone positions, like {pos1, pos2, pos3}, corresponding to slots to fill
+function refillOfferFromZone(zone_to_draw,table_zones,table_positions)
+    for i=1, #table_zones do
+        if getCardOrDeck(table_zones[i]) == nil then
+            takeFromZone(zone_to_draw, table_positions[i], {0,180,0})
         end
     end
-end
-
--- [ACME] Returns first card or deck object found in a zone, or nil
-function getCardOrDeck(zone)
-    local objects = zone.getObjects()
-    for key, obj in pairs(objects) do
-        if obj.tag == 'Card' or obj.tag == 'Deck' then
-            return obj
-        end
-    end
-    return nil
 end
 
 
@@ -350,7 +291,6 @@ function findEmptyPosition(zone_to_deal, positions_to_deal)
 end
 
 -- [ACME] call objects with numeric pad and place them on the mouse cursor (requires : vec_sum)
-    -- requires: vecSum()
 function onScriptingButtonDown(index, color)
     -- place all resource bags in this array
     if index >3 then return end -- this limit = #source
@@ -360,7 +300,7 @@ function onScriptingButtonDown(index, color)
         bag.rochecoeurs
     }
     local params={}
-    params.position = vecSum(getPointerPosition(color),{0,2,0})
+    params.position = getPointerPosition(color) + Vector ({0,2,0})
     params.rotation = {0,getPointerRotation(color),0}
     if source[index].getQuantity()==0 then
         broadcastToColor('Cette ressource est épuisée',color,color)
@@ -411,12 +351,12 @@ end
         })
     end
 
-    function activatePlayerCountingTile(player_table, resource_table)
-        for color, params in pairs(player_table) do
+    function activatePlayerCountingTile(table_players, resource_table)
+        for color, params in pairs(table_players) do
             -- reset position (shallow copy of counting_label_start_position)
             local position = {table.unpack(counting_label_start_position)}
             for index, table in pairs(resource_table) do
-                player_table[color].tile_counting.createButton({
+                table_players[color].tile_counting.createButton({
                     click_function = 'doNothing',
                     function_owner = Global,
                     label = table.name ..'s: '..'0',
@@ -425,7 +365,7 @@ end
                     height = 0,
                     width = 0,
                     position = position,
-                    rotation = {0, 0, 0} --(180 + player_table[color].rotation[2])
+                    rotation = {0, 0, 0} --(180 + table_players[color].rotation[2])
                 })
                 position[3] = position[3] + 0.5
             end
@@ -441,15 +381,15 @@ end
     end
 
     -- update player[color] table with ressources
-    function updatePlayerResourceAmounts(player_table, resource_table)
-        for color, _ in pairs(player_table) do
+    function updatePlayerResourceAmounts(table_players, resource_table)
+        for color, _ in pairs(table_players) do
             for index, line in pairs(resource_table) do
-                local nb_resource = countResourceInZone(player_table[color].zone_counting,line.name)
-                player_table[color].tile_counting.editButton({
+                local nb_resource = countResourceInZone(table_players[color].zone_counting,line.name)
+                table_players[color].tile_counting.editButton({
                     index = (index-1),
                     label = line.name ..'s: '..nb_resource
                 })
-                player_table[color][line.name] = nb_resource
+                table_players[color][line.name] = nb_resource
             end
         end
     end
