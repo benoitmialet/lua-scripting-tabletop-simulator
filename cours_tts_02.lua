@@ -101,7 +101,7 @@ end
     -- Ici par exemple, on veut décaler la position de 3 vers la droite et de 1 vers le haut par rapport au deck
 -- SYNTAXE DECOMPOSEE DES TABLES
     -- Je montre ici une autre syntaxe pour écrire des tables en plusieurs lignes
-    -- certains la trouveront plus lisibles. Il faut se faire aux deux !
+    -- certains la trouveront plus lisible. Il faut s'habituer aux deux car on les trouve partout !
         -- ma_table = {
         --     valeurs = {1,2,3}
         -- }

@@ -101,12 +101,12 @@ end
     -- L'itération se fait suivant ces index, dans l'ordre croissant (1, 2, 3, ...).
     -- Attention : ici on décompose l'index et la valeur de chaque entrée de la table avec index et value, 
     -- la boucle les comprend automatiquement
-    -- deux exemples sont données, un simple, un plus compliqué
+    -- deux exemples sont donnés, un simple, un plus compliqué
 -- PAIRS : ITERER SUR UNE TABLE (INDEX ALPHABETIQUES OU NUMERIQUES)
     -- Pour Itérer sur une table dont les index sont alphabétiques (fonctionne aussi avec les numériques),
-    -- Peut être utilisée lorsque l'on est pas certain de la nature des index.
-    -- L'itération se fait dans un ordre indéfini (pas forcément dans l'ordre croissant)
     -- Notre table "table_players" par exemple utilise un index alphabatique (les couleurs) et nécessite cette fonction pairs()
+    -- Peut être utilisée lorsque l'on n'est pas certain de la nature des index.
+    -- L'itération se fait dans un ordre indéfini (pas forcément dans l'ordre alphabétique croissant)
 -- LA TABLE PLAYER
     -- la table Player (avec majuscule !) existe par défaut dans TTS et contient beaucoup d'informations.
     -- https://api.tabletopsimulator.com/player/instance/
