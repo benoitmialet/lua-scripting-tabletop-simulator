@@ -3,8 +3,7 @@
 -- only set the parameters in onLoad() and it's all good
 -- if you want to use .GMNotes instead of .name, just replace all getName() occurences by getGMNotes() 
 
-game_data = {
-}
+game_data = {}
 
 function onSave()
     game_data.zone_capture_guid = zone_capture.guid
@@ -133,7 +132,6 @@ function onObjectLeaveScriptingZone(zone, enter_object)
 end
 
 function onPickUp()
-    -- zone_capture.destruct()
     if getObjectFromGUID(zone_capture.guid) then
         getObjectFromGUID(zone_capture.guid).destruct()
     end

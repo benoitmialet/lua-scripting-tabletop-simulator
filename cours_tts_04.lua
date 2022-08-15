@@ -76,9 +76,12 @@ function setupPlayers()
 end
 
 -- takeCardFromDeck1() pioche une carte et la place dans la défausse (voir cours_tts_03.lua)
-    -- on ajoute une condition
--- EVITER UN BUG SI UN DECK N'EXISTE PLUS OU S'IL RESTE 1 CARTE
-    -- s'il reste 1 carte, l'objet n'est plus un deck mais une carte.
+    -- on ajoute une condition pour vérifier que le deck existe bien d'abord.
+-- TESTER SI UN OBJET EXISTE
+    -- On a régulièrement besoin de savoir si un objet existe dans le jeu avant d'y faire appel
+    -- Dans notre exemple, si un deck n'existe plus et qu'on veut piocher dedans, le script plantera !
+    -- C'est une erreur de script très fréquente ! 
+    -- IMPORTANT : s'il reste 1 carte dans le deck, l'objet n'est plus un deck mais une carte !
     -- takeObject sur 1 carte seule ne fonctionnera pas et renverra une erreur
     -- on vérifie donc d'abord si le deck existe
     -- c'est une sécurité courante pour éviter de faire bugger un script
@@ -92,7 +95,6 @@ function takeCardFromDeck1()
     else
         return 0
     end
-
     local params = {}
     params.position = deck1.getPosition()
     params.position = params.position + Vector({3, 1, 0})

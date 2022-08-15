@@ -47,13 +47,6 @@ function get_Tile()
 
   for _, card in ipairs(objectsInBag) do
     if card.nickname:lower() == search_param:lower() then
-      if search_param == 1 then
-        troll = {-10.00, 1.55, -5.12}
-        print "hello"
-      end
-      if card.nickname:lower() == 2 then
-        troll = {10.00, 1.55, -5.12}
-      end
       self.takeObject({position = troll, guid = card.guid})
     end
   end
