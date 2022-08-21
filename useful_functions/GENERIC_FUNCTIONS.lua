@@ -292,16 +292,16 @@ end
 
 -- [ACME] call objects with numeric pad and place them on the mouse cursor (requires : vec_sum)
 function onScriptingButtonDown(index, color)
-    -- place all resource bags in this array
-    if index >3 then return end -- this limit = #source
+    -- place all resource bag objetcts in this array
     local source = {
         bag.pierres,
         bag.fers,
         bag.rochecoeurs
     }
+    if index > #source then return end -- stop the function
     local params={}
     params.position = getPointerPosition(color) + Vector ({0,2,0})
-    params.rotation = {0,getPointerRotation(color),0}
+    params.rotation = {0, getPointerRotation(color), 0}
     if source[index].getQuantity()==0 then
         broadcastToColor('Cette ressource est épuisée',color,color)
     else source[index].takeObject(params)

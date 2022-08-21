@@ -151,9 +151,9 @@ function setupTable()
         {-7.51, 1.04, 3.5},
         {-4.5, 1.04, 3.5}
     }
-    for i, _ in ipairs(position_card) do
+    for _, position in ipairs(position_card) do
         local params = {}                   -- syntaxe 2
-        params.position = position_card[i]
+        params.position = position
         params.rotation = {0, 180, 0}
         deck1.takeObject(params)
     end
@@ -180,18 +180,18 @@ function setupPlayers()
 
     -- distribution des jetons
     local colors_in_game = getSeatedPlayers()
-    for _, color in ipairs(colors_in_game) do -- par convention on nomme _ une variable que l'on n'utilisera pas 
-        for i, _ in ipairs(table_players[color].position_token) do
+    for _, color in ipairs(colors_in_game) do -- par convention on nomme _ une variable que l'on n'utilisera pas
+        for _, position in ipairs(table_players[color].position_token) do
             local params = {}
-            params.position = table_players[color].position_token[i]
+            params.position = position
             params.rotation = table_players[color].rotation_token
             bag_token.takeObject(params)
         end
     end
-    -- for _, color in ipairs(colors_in_game) do
-    --     for _, position in ipairs(table_players[color].position_token) do
+    -- for _, color in ipairs(colors_in_game) do  
+    --     for i, _ in ipairs(table_players[color].position_token) do
     --         local params = {}
-    --         params.position = position
+    --         params.position = table_players[color].position_token[i]
     --         params.rotation = table_players[color].rotation_token
     --         bag_token.takeObject(params)
     --     end
