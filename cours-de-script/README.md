@@ -41,7 +41,3 @@ attention  de meme que sur TTS : "save & play" recharge la dernière save TTS su
 Vous pouvez maintenant utiliser les scripts des cours #1 à #8. Chacun de ces cours est fait pour fonctionner avec ce même module de cours. Ne supprimez pas d'objet sur la table si vous tenez à ce que tout fonctionne.
 Il faudra de la patience et vous exercer avec vos propres modules. **Commencez avec peu d'ambition**, en suivant les cours. Trop de fonctionnalités d'un coup peut porter à confusion dans le code et vous décourager.
 A vous de jouer !
-
-
-## Fonctions génériques
-Les dossier "Generic functions" (commentaires en anglais) met à disposition des fonctions pratiques et régulièrement utiles dans des modules. Vous pourrez les explorer une fois les cours parcourus.
