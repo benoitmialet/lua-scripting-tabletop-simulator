@@ -19,7 +19,7 @@ function onLoad()
     cube_bleu = getObjectFromGUID(cube_bleu_guid)
     cube_rouge = getObjectFromGUID(cube_rouge_guid)
 
-    spawnSetupButtons()
+    activateButtonMenu()
 
     cube_bleu.createButton({
         click_function = "moveCube",
@@ -35,7 +35,7 @@ function onLoad()
 end
 
 --activation du bouton de mise en place
-function spawnSetupButtons()
+function activateButtonMenu()
     button_setup.createButton({
         click_function = "setupTable",
         function_owner = Global,

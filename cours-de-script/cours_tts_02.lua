@@ -8,28 +8,32 @@
 ----------------------------------------------------------------------------------------------------
 
 
+function onLoad()
+    button_deck = getObjectFromGUID('49df24')
+    button_setup = getObjectFromGUID('0926c8')
+    deck1 = getObjectFromGUID('c9c4c8')
+    activateButtonMenu()
+end
+
+
 -- Quelques exemples de boutons qui déclencheront des fonctions :
     -- shuffleDeck() mélangera le deck1
     -- takeCardFromDeck() piochera une carte dans le deck1 et la posera visible sur la table
     -- setup() distribuera des cartes aux joueurs (attention place le bouton sur un objet différent)
     -- NB : en nommant les fonctions dans les boutons, on ne peut pas passer de paramètre ou d'argument. 
     -- C'est un inconvénient, mais il existe des astuces pour contourner ! 
-function onLoad()
-    button_deck = getObjectFromGUID('49df24')
-    button_setup = getObjectFromGUID('0926c8')
-    deck1 = getObjectFromGUID('c9c4c8')
-
+function activateButtonMenu()
     button_deck.createButton({
-        click_function = "shuffleDeck1", -- la fonction qui va être déclenchée en cliquant sur le bouton
-        function_owner = Global, --où se trouve cette fonction (ici, dans l'environnement global)
-        label          = "Mélanger",
-        height          = 600,
-        width           = 2000,
-        font_size       = 300,
-        color           = {1, 1, 1, 1},
-        position        = {0, 0.3, 0},
-        rotation        = {0, 180, 0}
-    })
+            click_function = "shuffleDeck1", -- la fonction qui va être déclenchée en cliquant sur le bouton
+            function_owner = Global, --où se trouve cette fonction (ici, dans l'environnement global)
+            label          = "Mélanger",
+            height          = 600,
+            width           = 2000,
+            font_size       = 300,
+            color           = {1, 1, 1, 1},
+            position        = {0, 0.3, 0},
+            rotation        = {0, 180, 0}
+        })
 
     button_deck.createButton({
         click_function = "takeCardFromDeck1",

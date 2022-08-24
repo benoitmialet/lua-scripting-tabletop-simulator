@@ -32,7 +32,11 @@ function onLoad()
     button_setup = getObjectFromGUID(button_setup_guid)
     deck1 = getObjectFromGUID(deck1_guid)
     bag_token = getObjectFromGUID(bag_token_guid)
+    activateButtonMenu()
+end
 
+
+function activateButtonMenu()
     button_setup.createButton({
         click_function = "setupPlayers",
         function_owner = Global,

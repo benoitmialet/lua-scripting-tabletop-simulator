@@ -21,7 +21,7 @@ deck1_guid = 'c9c4c8'
         -- 3) enfin, dans la fonction onLoad() on charge les données de la sauvegarde contenue dans le JSON
             -- à chaque fois que onLoad() est lancée
     -- on peut maintenant faire appel à la table game_data à tout moment
-        -- ici on déplace la création de bouton setup dans une fonction et on soumet son apparition à une condition
+        -- ici on soumet l'apparition du bouton setup à une condition
         -- en effet, si la partie est déja mise en place, ce bouton n'a pas lieu d'apparaitre !
 game_data = {
     setup_done = false,
@@ -42,12 +42,12 @@ function onLoad(saved_data)
     deck1 = getObjectFromGUID(deck1_guid)
 
     if game_data.setup_done == false then
-        spawnSetupButtons()
+        activateButtonMenu()
     end
 end
 
 -- Il est plus pratique de regrouper les créations de boutons dans une fonction
-function spawnSetupButtons()
+function activateButtonMenu()
     button_setup.createButton({
         click_function = "setupTable",
         function_owner = Global,

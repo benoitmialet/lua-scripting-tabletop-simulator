@@ -6,9 +6,6 @@
 ----------------------------------------------------------------------------------------------------
 
 --onLoad() cours 03
-    -- howToLoop renvoie vers une fonction qui nous servira à comprendre les boucles
-    -- setupTable va distribuer des cartes sur la table
-    -- setupPlayers va distribuer des jetons devant les joueurs
     -- nb_cards_to_deal va être utilisé plusieurs fois dans le code. On le déclare donc ici
     -- la table que l'on nomme table_players contiendra les informations sur les joueurs
         -- par exemple : la position des jetons à distribuer et leur orientation
@@ -22,6 +19,38 @@ function onLoad()
     button_how_to_loop = getObjectFromGUID('1fb029') -- pour comprendre les boucles
     bag_token = getObjectFromGUID('200cdb') --un sac de jetons infini
 
+    activateButtonMenu()
+
+    nb_cards_to_deal = {4, 3, 2, 2, 1}
+
+    table_players = {
+        ['White'] = {
+            message = "j'aime les frites",
+            position_token = {
+                {17, 2, -24},
+                {20, 2, -24},
+                {23, 2, -24},
+                {26, 2, -24},
+            },
+            rotation_token = {0,180,0}
+        },
+        ['Red'] = {
+            message = "j'aime le pâté",
+            position_token = {
+                {41.5, 2, -18.5},
+                {41.5, 2, -15.5},
+                {41.5, 2, -12.5},
+                {41.5, 2, -9.5}
+            },
+            rotation_token = {0,90,0}
+        }
+    }
+end
+
+-- howToLoop renvoie vers une fonction qui nous servira à comprendre les boucles
+-- setupTable va distribuer des cartes sur la table
+-- setupPlayers va distribuer des jetons devant les joueurs
+function activateButtonMenu()
     button_how_to_loop.createButton({
         click_function = "howToLoop",
         function_owner = Global,
@@ -57,33 +86,7 @@ function onLoad()
         position        = {0, 0.3, 1},
         rotation        = {0, 180, 0}
     })
-
-    nb_cards_to_deal = {4, 3, 2, 2, 1}
-
-    table_players = {
-        ['White'] = {
-            message = "j'aime les frites",
-            position_token = {
-                {17, 2, -24},
-                {20, 2, -24},
-                {23, 2, -24},
-                {26, 2, -24},
-            },
-            rotation_token = {0,180,0}
-        },
-        ['Red'] = {
-            message = "j'aime le pâté",
-            position_token = {
-                {41.5, 2, -18.5},
-                {41.5, 2, -15.5},
-                {41.5, 2, -12.5},
-                {41.5, 2, -9.5}
-            },
-            rotation_token = {0,90,0}
-        }
-    }
 end
-
 
 -- LES BOUCLES FOR
     -- on attaque un gros morceau !

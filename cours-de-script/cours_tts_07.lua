@@ -18,12 +18,12 @@ function onLoad()
     button_deck = getObjectFromGUID(button_deck_guid)
     deck1 = getObjectFromGUID(deck1_guid)
     zone_game = getObjectFromGUID(zone_game_guid)
-    spawnSetupButtons()
+    activateButtonMenu()
 end
 
 -- BOUTONS DECORATIFS
     -- on peut créer des boutons "décoratifs" (juste du texte affiché) qui renvoient vers une fonction vide
-function spawnSetupButtons()
+function activateButtonMenu()
     button_setup.createButton({
         click_function = "setupTable",
         function_owner = Global,

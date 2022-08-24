@@ -20,7 +20,6 @@ deck1_guid = 'c9c4c8'
 -- Dans la fonction onLoad(), on va ajouter des déclarations de zones et changer un ou deux boutons
     -- zone_deck servira à détecter un deck 
     -- zone_game au milieu de la table
-    -- pickCardFromZoneDeck va piocher une carte dans zone_deck
     -- table_players définit une zone pour chaque joueur (recouvre ses plateaux, pions et cartes)
 function onLoad()
     button_setup = getObjectFromGUID(button_setup_guid)
@@ -30,6 +29,26 @@ function onLoad()
     zone_deck = getObjectFromGUID(zone_deck_guid)
     zone_game = getObjectFromGUID(zone_game_guid)
 
+    activateButtonMenu()
+
+    table_players = {
+        ['White'] = {
+            zone = getObjectFromGUID('3ea23c')
+        },
+        ['Red'] = {
+            zone = getObjectFromGUID('1580ff')
+        },
+        ['Blue'] = {
+            zone = getObjectFromGUID('545c2b')
+        },
+        ['Green'] = {
+            zone = getObjectFromGUID('5eaba1')
+        }
+    }
+end
+
+-- pickCardFromZoneDeck va piocher une carte dans zone_deck
+function activateButtonMenu()
     button_setup.createButton({
         click_function = "setupTable",
         function_owner = Global,
@@ -53,22 +72,8 @@ function onLoad()
         position        = {0, 0.3, 0},
         rotation        = {0, 180, 0}
     })
-
-    table_players = {
-        ['White'] = {
-            zone = getObjectFromGUID('3ea23c')
-        },
-        ['Red'] = {
-            zone = getObjectFromGUID('1580ff')
-        },
-        ['Blue'] = {
-            zone = getObjectFromGUID('545c2b')
-        },
-        ['Green'] = {
-            zone = getObjectFromGUID('5eaba1')
-        }
-    }
 end
+
 
 -- cette fonction distribue 4 cartes sur la table (voir cours 03)
 -- on ajoute l'appel d'une fonction qui va détruire les objets des joueurs absents (voir plus loin)

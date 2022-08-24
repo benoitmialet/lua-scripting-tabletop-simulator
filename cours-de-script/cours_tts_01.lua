@@ -33,14 +33,20 @@
     -- Tout élément physique est un objet qui est identifié par son GUID unique. 
     -- Le GUID est une chaîne de caractère, entre '' ou "" : 'abc124' 
     -- Dans onLoad, on déclare tous les objets que l'on va utiliser plus tard dans le code, grâce à leur GUID
+-- ici on déplace la création de bouton setup dans une fonction à part (on verra dans le cours 06 pourquoi)
+function onLoad()
+    cube_bleu = getObjectFromGUID('afa021')
+    cube_rouge = getObjectFromGUID('939c55')
+    activateButtonMenu()
+end
+
+
 -- Les BOUTONS :
     -- les boutons servent à activer des fonctions avec un clic souris.
     -- Ils sont en général sous la forme de carré blanc, placé sur un objet.
     -- Tous les paramètres du bouton sont contenus dans un "array" (ou "tableau", entre {}) et ils sont tous "nommés"
-    -- On créée ici dans onLoad un bouton cliquable sur un objet, pour qu'il appatraissent au chargement.
-function onLoad()
-    cube_bleu = getObjectFromGUID('afa021')
-    cube_rouge = getObjectFromGUID('939c55')
+    -- On créée ici un bouton cliquable sur un objet, pour qu'il appatraissent au chargement.
+function activateButtonMenu()
     cube_bleu.createButton({
         click_function = "setup", -- ce paramètre définit la fonction qui va être déclenchée en cliquant sur le bouton
         function_owner = Global, --où se trouve cette fonction (ici, dans l'environnement global, la table de jeu)
@@ -55,6 +61,7 @@ function onLoad()
         rotation        = {0, 180, 0}
     })
 end
+
 
 -- cette fonction Setup sera déclenchée en cliquant donc sur le bouton
 -- LOCAL / GLOBAL = portée des variables
