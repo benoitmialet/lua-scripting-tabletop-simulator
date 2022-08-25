@@ -11,7 +11,6 @@ Ce dossier rassemble 8 cours pour apprendre à scripter vos modules Tabletop Sim
 * etc
 
 
-
 ## Installer Visual Studio Code et essayez les scripts du cours
 
 Pour scripter, il est quasi indispensable d'utiliser un éditeur de code. Cela sert à bien indenter son code (l'aligner pour mieux le lire et éviter des fautes) et à faire de la reconnaissance syntaxique (colorer son code pour mieux le lire, indispensable). Je conseille très fortement Visual Studio Code (gratuit). Il est possible d'utiliser Atom avec le plugin pour TTS (bien que chez moi il fonctionne mal), mais je ne pourrai pas vous aider en cas de problème. Les autres éditeurs de code n'auront pas forcément de plugin spécifique pour TTS.
@@ -24,19 +23,30 @@ Installez les plugins suivants sous VSCode en cliquant sur "extensions":
 * Lua (sumneko)
 * Tabletop Simulator Lua (Rolandostar)
 
+![le workspace](https://github.com/benoitmialet/lua-scripting-tabletop-simulator/blob/main/img/cours_tts_install_02.JPG)
+![le workspace](https://github.com/benoitmialet/lua-scripting-tabletop-simulator/blob/main/img/cours_tts_install_03.JPG)
+![le workspace](https://github.com/benoitmialet/lua-scripting-tabletop-simulator/blob/main/img/cours_tts_install_04.JPG)
+
 ### 3) création du Workspace
 Cette étape permet de relier VSCode à TTS. Ainsi, plus besoin de copier coller son code sous TTS.
 Suivez les étapes suivantes : 
 
 * Créez un dossier dans lequel vous mettrez tout vos scripts
 * Dans "Fichiers" choisissez "Add folder to Workspace".Choisir le dossier précédemment créé.
-Une fois le workspace créé et sauvegardé, c'est tout bon. 
-![le workspace](https://github.com/benoitmialet/lua-scripting-tabletop-simulator/blob/main/img/04.png)
+Une fois le workspace créé et sauvegardé, c'est tout bon.
+
+![le workspace](https://github.com/benoitmialet/lua-scripting-tabletop-simulator/blob/main/img/cours_tts_install_01.JPG)
 
 ### 4) Tester le tout !
 * Lancez une nouvelle partie sous TTS. Sauvegardez-la, puis chargez-la (oui oui).
 * Sur VSCode, cliquez "Fichier" -> "New text file"
+
+![le workspace](https://github.com/benoitmialet/lua-scripting-tabletop-simulator/blob/main/img/cours_tts_install_06.JPG)
+
 * clic droit au milieu de la fenêtre de script VSC puis **"Get Lua Script"**, ou bien **CTRL + ALT + L** : Les scripts de la partie en cours sont directement importés sur VSC.
+
+![le workspace](https://github.com/benoitmialet/lua-scripting-tabletop-simulator/blob/main/img/cours_tts_install_05.JPG)
+
 * écrivez print('ça fonctionne') quelque part dans la fonction onLoad()
 * Envoyez le code (depuis cette fenêtre) sur TTS en faisant clic droit dans la fenêtre de script VSC puis **"Save and Play"**, ou bien **CTRL + ALT + S**. 
 **Attention** de meme que sur TTS : "save & play" recharge la dernière sauvegarde TTS sur votre disque dur + le nouveau code. si vous avez modifié le module entre temps (ajouté, déplacé les objets etc), faites une vraie sauvegarde TTS avec Game -> save game, etc. sinon les modifications du mod seront perdues.
