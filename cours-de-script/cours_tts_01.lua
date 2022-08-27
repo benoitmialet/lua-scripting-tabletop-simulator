@@ -43,27 +43,30 @@ end
 
 -- Les BOUTONS :
     -- les boutons servent à activer des fonctions avec un clic souris.
-    -- Ils sont en général sous la forme de carré blanc, placé sur un objet.
-    -- Tous les paramètres du bouton sont contenus dans un "array" (ou "tableau", entre {}) et ils sont tous "nommés"
-    -- On créée ici un bouton cliquable sur un objet, pour qu'il appatraissent au chargement.
+    -- Ils sont en général sous la forme de carré blanc ou coloré, placé sur un objet.
+    -- Tous les paramètres du bouton sont contenus dans une "table" (entre {}) et ils sont tous "nommés"
+    -- On créée ici un bouton cliquable sur un objet, pour qu'il appatraisse au chargement.
+    -- En génnéral, on cache l'objet qui porte le bouton sous la surface de la table et on le lock.
 function activateButtonMenu()
-    cube_bleu.createButton({
-        click_function = "setup", -- ce paramètre définit la fonction qui va être déclenchée en cliquant sur le bouton
+    cube_rouge.createButton({
+        click_function = "moveCube", -- ce paramètre définit la fonction qui va être déclenchée en cliquant sur le bouton
         function_owner = Global, --où se trouve cette fonction (ici, dans l'environnement global, la table de jeu)
         label          = "Démarrer",
-        height          = 200,
-        width           = 800,
-        font_size       = 120,
-        color           = {1, 1, 0.5, 1}, -- premiere façon d'écrire une couleur {r,g,b, opacité}, valeurs de 0 à 1
-        -- color           = {163/255, 255/255, 100/255, 1}, la même façon, en utilisant des fractions
-        -- color           = 'Red',  deuxième façon, sous forme de chaine de caractères ('Yellow', 'Green', 'Blue'...)
-        position        = {0, 1, 0},
-        rotation        = {0, 180, 0}
+        height          = 500,
+        width           = 600,
+        font_size       = 130,
+        color           = {0.5, 1, 0.5, 1}, -- premiere façon d'écrire une couleur {r,g,b, opacité}, valeurs de 0 à 1
+        -- color           = {163/255, 255/255, 100/255, 1},-- la même façon, en utilisant des fractions
+        -- color           = 'Green', -- deuxième façon, sous forme de chaine de caractères ('Yellow', 'Red', 'Blue'...)
+        position        = {0, 0.5, 0},
+        rotation        = {0, 0, 0},
+        size = {1,1,1}
     })
 end
 
 
--- cette fonction Setup sera déclenchée en cliquant donc sur le bouton
+-- La fonction moveCube sera donc déclenchée en cliquant sur le bouton. 
+    -- Elle déplace simplement le cube bleu et affiche un message 
 -- LOCAL / GLOBAL = portée des variables
     -- la portée d'une variable définit où elle peut être appelée dans le code.
     -- par défaut toute variable est "globale" : on peut l'appeler dans tout le code une fois déclarée
@@ -83,14 +86,14 @@ end
         -- l'associer à SetRotationSmooth() pour gérer l'orientation de l'objet
         -- setPosition() est la même chose mais instantanée.
         -- on en verra d'autres plus tard, ces deux sont largement suffisantes.
-function setup()
-    local nb_cards = 10
-    print('Il y a : ' .. nb_cards .. ' cartes.')
+function moveCube()
+    local nb_cubes = 2
+    print('Il y a : ' .. nb_cubes .. ' cubes sur la table.')
     broadcastToAll('Bienvenue !', 'Yellow')
-    cube_rouge.setPositionSmooth({0, 3, 0})
-    cube_rouge.setRotationSmooth({0, 180, 0})
-    -- cube_rouge.setPosition({0, 3, 0})
-    -- cube_rouge.setRotation({0, 180, 0})
+    cube_bleu.setPositionSmooth({0, 3, 0})
+    cube_bleu.setRotationSmooth({0, 180, 0})
+    -- cube_bleu.setPosition({0, 3, 0})
+    -- cube_bleu.setRotation({0, 180, 0})
 end
 
 -- COMMENTER DU CODE :

@@ -23,6 +23,7 @@ deck1_guid = 'c9c4c8'
     -- on peut maintenant faire appel à la table game_data à tout moment
         -- ici on soumet l'apparition du bouton setup à une condition
         -- en effet, si la partie est déja mise en place, ce bouton n'a pas lieu d'apparaitre !
+        -- faites le test : cliquez sur "installer la table", sauvegardez puis recharger la partie. 
 game_data = {
     setup_done = false,
     round_nb = 1,
@@ -46,7 +47,6 @@ function onLoad(saved_data)
     end
 end
 
--- Il est plus pratique de regrouper les créations de boutons dans une fonction
 function activateButtonMenu()
     button_setup.createButton({
         click_function = "setupTable",
@@ -98,11 +98,12 @@ function setupTable()
         delay = delay + delay_add
     end
 
+    button_setup.clearButtons()
     game_data.setup_done = true
 end
 
 -- NB: La fonction Wait.time() donne l'illusion que le code placé en paramètre va "attendre" avant d'être exécuté
 -- En réalité il n'en est rien. Tout le bloc de code sera exécuté instantément. 
 -- C'est son processus qui va être décalé dans le temps. Cela peut crééer des surprises inattendues.
--- Si vous cherchez a réellement décaller des processus dans le temps, utilisez un Timer (voir le cours 09)
--- Wait.time() est cependant parfait pour le positionnement d'objets dynamiques.
+-- Si vous cherchez a réellement décaler des processus dans le temps, utilisez un Timer (voir le cours 09)
+-- Wait.time() est cependant parfait donner un joli rendu animé au positionnement d'objets.

@@ -2,14 +2,14 @@
 -- SCRIPTER POUR TABLETOP SIMULATOR /05
 -- MAJ 07/08/2022
 -- Objectifs:
-    -- Utiliser les Zones de script
-    -- Tester les propriétés des objets (name, type, etc.)
+-- Utiliser les Zones de script
+-- Tester les propriétés des objets (name, type, etc.)
 ----------------------------------------------------------------------------------------------------
 
 -- ZONE DE SCRIPT
-    -- une zone de script va servir à détecter un ou plusieurs objets et permet d'agir dessus
-    -- elle est un objet comme les autres et se déclare avec getObjectFromGUID()
-    -- on l'utilise généralement avec les boucles for et les tests de condition if
+-- une zone de script va servir à détecter un ou plusieurs objets et permet d'agir dessus
+-- elle est un objet comme les autres et se déclare avec getObjectFromGUID()
+-- on l'utilise généralement avec les boucles for et les tests de condition if
 
 button_setup_guid = '0926c8'
 zone_deck_guid = 'ae31a0'
@@ -47,7 +47,7 @@ function onLoad()
     }
 end
 
--- pickCardFromZoneDeck va piocher une carte dans zone_deck
+-- drawCardFromZoneDeck va piocher une carte dans zone_deck
 function activateButtonMenu()
     button_setup.createButton({
         click_function = "setupTable",
@@ -62,7 +62,7 @@ function activateButtonMenu()
     })
 
     button_zone_deck.createButton({
-        click_function = "pickCardFromZoneDeck",
+        click_function = "drawCardFromZoneDeck",
         function_owner = Global,
         label          = "Piocher\nune carte",
         height          = 1000,
@@ -101,24 +101,24 @@ end
     -- nous avons vu que ce n'était pas possible. Voici un moyen de le contourner
     -- il suffit de créer des fonctions intermédiaires qui renverront vers la fonction principale
     -- c'est aussi simple que cela
-    -- l'avantage est que la fonction principale est générique et peut être réutilisée
-function pickCardFromZoneDeck()
-    pickCardFromZone(zone_deck)
+    -- l'avantage est que la fonction principale est générique et peut être réutilisée dans plusieurs contextes différents
+function drawCardFromZoneDeck()
+    drawCardFromZone(zone_deck)
 end
 
 -- PIOCHER DES ELEMENTS DEPUIS UNE ZONE
-    -- on modifie la fonction de scours précédents pour piocher depuis une zone.
+    -- on modifie la fonction de scours précédents pour piocher une carte depuis une zone.
     -- quelle utilité ?
         -- Elle fonctionnera à tous les coups, évitant de faire bugger un script de pioche si le deck est absent ou détruit.
         -- Cela arrive en général lorsqu'une pioche se vide.
     -- le principe :
         -- 1) on fait l'inventaire des objets contenus dans la zone
-        -- 2) on recherche un deck
-        -- 3) on pioche depuis ce deck
+        -- 2) on recherche un deck (ou un sac)
+        -- 3) on pioche depuis ce deck (ou ce sac)
 -- TESTS IF SUR GETOBJECTS
-    -- nous avons vu un exemple d'utilisation de getObjects avec le name dans le cours cours_tts_04.lua
+    -- nous avons vu un exemple d'utilisation de getObjects avec une recherche basée sur le name dans le cours cours_tts_04.lua
     -- on peut en fait tester toutes les propriétés des objets listés (type, nom...)
-    -- ici on va ici tester le type pour trouver un deck ou une carte puis utiliser les fonctions appropriées
+    -- ici on va ici tester le type pour trouver un objet de type deck carte puis utiliser une fonction appropriée
     -- ATTENTION IMPORTANT, à retenir par coeur !!! :
         -- si on utilise getObjects() sur une ZONE, on doit utiliser majoritairement des FONCTIONS GET:
             -- getName() pour obtenir le nom de l'objet
@@ -133,7 +133,6 @@ end
             -- .type n'existe pas (retourne "nil")
             -- le détail complet : https://api.tabletopsimulator.com/object/#getobjects-containers
         -- (vous cherchez une logique dans tout ça ? Moi aussi !)
-
 -- TYPES D'OBJETS
     -- il existe énormément de types : 'Deck', 'Card', 'Token', 'Tile', 'Generic', 'Bag'...
     -- https://api.tabletopsimulator.com/built-in-object/#object-types.
@@ -142,17 +141,17 @@ end
     -- elseif rajoute une condition si la précédente n'est pas vérifiée.
     -- else finit un test if et indique ce qu'il faut faire si aucune condition n'est vérifiée
     -- si ... sinon si ... sinon ... alors
-function pickCardFromZone(zone)
+function drawCardFromZone(zone)
     local objects = zone.getObjects()
     for i, obj in ipairs(objects) do
         if obj.type == 'Deck' then
             local params = {}
-            params.position = obj.getPosition() + Vector({3, 1, 0})
+            params.position = obj.getPosition() + Vector({3, 0.5, 0})
             params.rotation = {0, 180, 0}
             obj.takeObject(params)
         elseif obj.type == 'Card' then
             obj.setRotationSmooth({0, 180, 0})
-            obj.translate({3, 1, 0})
+            obj.translate({3, 0.5, 0})
         end
     end
 end

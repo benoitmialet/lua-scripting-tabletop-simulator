@@ -149,7 +149,7 @@ end
     -- j'utilise volontairement les 2 syntaxes d'écriture de tables pour vous habituer :)
 function setupTable()
     local position_card = {                 -- syntaxe 1
-        {-13.49, 1.04, 3.5}, -- NB : chaque entrée de la table est donc aussi une petite table... 
+        {-13.49, 1.04, 3.5}, -- NB : chaque entrée (ligne) de la table est donc aussi une petite table... 
         {-10.5, 1.04, 3.5},
         {-7.51, 1.04, 3.5},
         {-4.5, 1.04, 3.5}
@@ -191,12 +191,4 @@ function setupPlayers()
             bag_token.takeObject(params)
         end
     end
-    -- for _, color in ipairs(colors_in_game) do  
-    --     for i, _ in ipairs(table_players[color].position_token) do
-    --         local params = {}
-    --         params.position = table_players[color].position_token[i]
-    --         params.rotation = table_players[color].rotation_token
-    --         bag_token.takeObject(params)
-    --     end
-    -- end
 end

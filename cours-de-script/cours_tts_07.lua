@@ -37,18 +37,6 @@ function activateButtonMenu()
     })
 
     button_deck.createButton({
-        click_function = "shuffleDeck",
-        function_owner = Global,
-        label          = "Mélanger",
-        height          = 600,
-        width           = 2000,
-        font_size       = 300,
-        color           = {1, 1, 1, 1},
-        position        = {0, 0.3, 1.2},
-        rotation        = {0, 180, 0}
-    })
-
-    button_deck.createButton({
         click_function = "takeCardFromDeck1",
         function_owner = Global,
         label          = "Défausser",
@@ -56,7 +44,7 @@ function activateButtonMenu()
         width           = 2000,
         font_size       = 300,
         color           = {1, 1, 1, 1},
-        position        = {0, 0.3, 0},
+        position        = {0, 0.3, 1.2},
         rotation        = {0, 180, 0}
     })
 
@@ -67,13 +55,14 @@ function activateButtonMenu()
         height          = 0,
         width           = 0,
         font_size       = 300,
+        color           = {1, 1, 1, 1},
         font_color      = {1, 1, 1, 1},
-        position        = {0, 0.3, -1.2},
+        position        = {0, 0.3, 0},
         rotation        = {0, 180, 0}
     })
 end
 
---fonction reliée au bouton décoratif
+--fonction reliée au bouton décoratif, qui ne fait rien
 function doNothing()
 end
 
@@ -107,6 +96,7 @@ function setupTable()
             {-1.5, 1.04, 3.5},
             {1.5, 1.04, 3.5}
         }
+    deck1.shuffle()
     for i, position in ipairs(position_card) do
         local params = {}
         params.position = position
@@ -116,7 +106,7 @@ function setupTable()
         addPickButton(card)
 
         button_deck.editButton({
-            index           = 2,        -- (obligatoire)
+            index           = 1,        -- (obligatoire)
             click_function  = 'pickFromDeck',
             label           = 'Piocher',
             height          = 600,
@@ -153,8 +143,10 @@ end
     -- NB : deal() marche aussi bien sur une carte seul que sur un deck, contrairement a takeObject()
     -- 2) on pense à retirer tout bouton de cette carte avant de l'envoyer en main avec clearButtons()
     -- 3) on ajoute par exemple une fonction qui va nettoyer l'offre de cartes une fois celle-ci choisie
-        -- 3a) enlever tous les boutons des cartes
-        -- 3b) placer les cartes dans la défausse
+        -- a) faire l'inventaire des objets de la zone et le parcourir
+        -- b) identifier les cartes. pour chaque carte :  
+            -- c) effacer tous les boutons
+            -- d) la placer dans la défausse
 function pickCard(card, color)
     card.deal(1,color)
     card.clearButtons()
@@ -163,16 +155,12 @@ function pickCard(card, color)
         -- local position = deck1.positionToWorld({3, 1, 0})
         local position = deck1.getPosition() + Vector({3, 1, 0})
         for index, obj in ipairs(objects) do
-            obj.clearButtons()
-            obj.setPositionSmooth(position)
+            if obj.type == 'Card' then
+                obj.clearButtons()
+                obj.setPositionSmooth(position) 
+            end
         end
     end,1)
-end
-
-
--- (cf cours_tts_02.lua)
-function shuffleDeck()
-    deck1.shuffle()
 end
 
 

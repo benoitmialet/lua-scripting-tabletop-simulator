@@ -74,20 +74,21 @@ end
     -- une meilleure façon décrire cette même fonction aurait été de la rendre générique, utilisable partout
     -- Il faudrait alors l'appeler en écrivant : shuffleDeck(deck1),
     -- ce qui n'est pas possible via un bouton...
+    -- la fonction qui suit est un exemple et ne sert pas dans notre code 
 function shuffleDeck(deck) -- ici on passe l'objet que l'on veut mélanger en paramètre, ou  "argument"
     deck.shuffle()
 end
 
 
 -- La fonction TAKEOBJECT
-    -- La fonction takeObject() sert à piocher un objet d'un sac ou d'un deck (carte).
+    -- La fonction takeObject() sert à piocher un objet d'un conteneur (sac ou deck).
     -- C'est une fonction de base de TTS.
     -- Elle requiert un seul argument sous forme de table {}, contenant tous les paramètres requis.
     -- Quelques autres fonctions de TTS recquièrent une table, mais elles sont peu nombreuses.
-    -- Cette table recquiert 2 paramètres qu'il faudra obligatoirement appeler "position" et "rotation"
-    -- Ils donnent la position et la rotation de la destination de l'objet pioché
+    -- Cette table utilise surtout 2 paramètres qu'il faudra obligatoirement appeler "position" et "rotation"
+    -- Ils donnent la position (destination) et la rotation de l'objet pioché
     -- Pour faciliter l'écriture, on prépare donc cette table à l'avance que l'on nommera "params"
-    -- On l'injectera ensuite comme argument dans la fonction takeObject()
+    -- On l'injectera ensuite comme paramètre dans la fonction takeObject()
 function takeCardFromDeck1()
     local params = {
         position = {10.25, 1.23, 4.75},
@@ -96,8 +97,8 @@ function takeCardFromDeck1()
     deck1.takeObject(params)
 end
 
--- on aurait pu aussi désigner la position de la carte en fonction de la position du deck.
--- on réécrit donc ici la même fonction mais en déplacement relatif
+-- on devrait plutôt désigner la position de la carte en fonction de la position du deck, au cas où il seraiit bougé par exemple.
+-- on réécrit donc ici la même fonction mais en déplacement relatif, c'est une version améliorée.
 -- POSITIONNEMENT RELATIF EN UTILISANT VECTOR
     -- Vector() est une classe qui transforme une table de 3 valeurs en vecteur
     -- on peut ainsi additionner, soustraire des vecteurs entre eux. Super pratique.

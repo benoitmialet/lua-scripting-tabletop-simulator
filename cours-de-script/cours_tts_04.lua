@@ -2,23 +2,23 @@
 -- SCRIPTER POUR TABLETOP SIMULATOR /04
 -- MAJ 07/08/2022
 -- Objectif:
-    -- Comprendre les test if...then
+-- Comprendre les test if...then
 ----------------------------------------------------------------------------------------------------
 
 -- TEST IF
-    -- un test "if" sert à tester une condition et suit la logique du langage naturel:
-        --"si [condition] alors..", "si [condition1] ou [condition2] alors.., sinon..."
-    -- Il existe plusieurs façons d'utiliser un if (il y a un exemple de chaque dans ce cours):
-        -- en comparant avec une valeur numérique (attention aux notations) :  >10  <2  >=5  <= 6  ==5
-        -- en comparant avec une chaîne de caractère : == 'le texte à comparer'
-        -- avec un "booléen". C'est une variable qui ne peut prendre que 2 valeurs: 1 ou 0, true ou false, existe ou n'existe pas
-    -- un test if peut combiner plusieurs conditions
-        -- IF condition1 and condition2   : les 2 conditions doivent être vérifiées
-        -- IF condition1 or condition2   : au moins une des 2 conditions doit être vérifiée
+-- un test "if" sert à tester une condition et suit la logique du langage naturel:
+    --"si [condition] alors..", "si [condition1] ou [condition2] alors.., sinon..."
+-- Il existe plusieurs façons d'utiliser un if (il y a un exemple de chaque dans ce cours):
+    -- en comparant avec une valeur numérique (attention aux notations) :  >10  <2  >=5  <= 6  ==5
+    -- en comparant avec une chaîne de caractère : == 'le texte à comparer'
+    -- avec un "booléen". C'est une variable qui ne peut prendre que 2 valeurs: 1 ou 0, true ou false, existe ou n'existe pas
+-- un test if peut combiner plusieurs conditions
+    -- IF condition1 and condition2   : les 2 conditions doivent être vérifiées
+    -- IF condition1 or condition2   : au moins une des 2 conditions doit être vérifiée
 -- DECLARER DES GUID EN DEHORS DE ONLOAD
-    -- déclarer les guid des objets ici permet de déclarer des objets à chaque fois que l'on en a besoin
-    -- et pas seulement dans la fonction onLoad()
-    -- suivant comment est organisé le script, cela peut être utile (on va s'en servir dans ce script)
+-- déclarer les guid des objets ici permet de déclarer des objets à chaque fois que l'on en a besoin
+-- et pas seulement dans la fonction onLoad()
+-- suivant comment est organisé le script, cela peut être utile (on va s'en servir dans ce script)
 button_deck_guid = '49df24'
 button_setup_guid = '0926c8'
 deck1_guid = 'c9c4c8'
@@ -76,6 +76,7 @@ function setupPlayers()
         for i = 1, 5 do
             takeCardFromDeck1() --voir plus bas pour cette fonction
         end
+        broadcastToAll("5 cartes ont été défaussées.")
     end
 end
 
