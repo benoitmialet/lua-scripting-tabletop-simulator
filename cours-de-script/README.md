@@ -47,7 +47,7 @@ Une fois le workspace créé et sauvegardé, c'est tout bon.
 
 ![le workspace](https://github.com/benoitmialet/lua-scripting-tabletop-simulator/blob/main/img/cours_tts_install_05.JPG)
 
-* écrivez print('ça fonctionne') quelque part dans la fonction onLoad()
+* écrivez print('coucou') quelque part dans la fonction onLoad()
 * Envoyez le code (depuis cette fenêtre) sur TTS en faisant clic droit dans la fenêtre de script VSC puis **"Save and Play"**, ou bien **CTRL + ALT + S**. 
 **Attention** de meme que sur TTS : "save & play" recharge la dernière sauvegarde TTS sur votre disque dur + le nouveau code. si vous avez modifié le module entre temps (ajouté, déplacé les objets etc), faites une vraie sauvegarde TTS avec Game -> save game, etc. sinon les modifications du mod seront perdues.
 *Si vous voyez apparaître "coucou" dans la console de Chat, alors tout fonctionne et vous êtes fin prêt(e). 
