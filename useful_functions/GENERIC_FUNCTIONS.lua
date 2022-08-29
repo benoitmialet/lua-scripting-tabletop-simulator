@@ -200,26 +200,42 @@ end
 
 --CARDS/OBJECTS----------------------------------------------------------------------------------------------
 
--- [ACME] Take first object from ANY first card or container (deck, bag, infinite bag) found in a zone,
-    -- then returns the object taken
+-- [ACME] Take a number of objects from ANY first card or container (deck, bag, infinite bag) found in a zone,
     -- Arguments:
-        -- zone: object
+        -- zone: object. Zone where the container or card is
+        -- nb_to_take: integer. amount of objects to deal
         -- position: vector
-        -- Rotation: vector (if object is sure to be a single card, type 0 to keep the rotation unchanged)
-function takeFromZone(zone, position, rotation)
+        -- Rotation: vector (optional)
+    -- returns a table of taken objects
+function takeObjectsFromZone(zone, nb_to_take, position, rotation)
     local objects = zone.getObjects()
     for key, obj in ipairs(objects) do
         if obj.tag == 'Infinite' or obj.tag == 'Bag' or obj.tag == 'Deck' then
-            local obj_dealt = obj.takeObject({
-                position = position,
-                rotation = rotation
-            })
-            return obj_dealt
+            local rotation = rotation or obj.getRotation()
+            local nb_left = obj.getQuantity()
+            local jump = Vector({0, 0.6 ,0}) -- jump between objects
+            local table_obj_dealt = {}
+            for i = 1, math.min(nb_left, nb_to_take)     do
+                local obj_dealt = obj.takeObject({
+                    position = Vector(position) + jump * (i+1),
+                    rotation = rotation
+                })
+                table.insert(table_obj_dealt, obj_dealt)
+            end
+            local nb_missing = nb_to_take - nb_left
+            if nb_missing > 0 then
+                broadcastToAll(nb_missing.." objects are missing")
+            end
+            return table_obj_dealt
         else
             if obj.tag == 'Card' then
+                local rotation = rotation or obj.getRotation()
                 obj.setPositionSmooth(position)
-                if rotation ~= 0 then obj.setRotationSmooth(rotation) end
-                return obj
+                obj.setRotationSmooth(rotation)
+                if nb_to_take > 1 then
+                    broadcastToAll((nb_to_take - 1).." objects are missing")
+                end
+                return {obj}
             end
         end
     end

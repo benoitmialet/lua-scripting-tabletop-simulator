@@ -157,7 +157,7 @@ function pickCard(card, color)
         for index, obj in ipairs(objects) do
             if obj.type == 'Card' then
                 obj.clearButtons()
-                obj.setPositionSmooth(position) 
+                obj.setPositionSmooth(position)
             end
         end
     end,1)
@@ -174,9 +174,11 @@ function takeCardFromDeck1()
 end
 
 
--- cette petite fonction regroupe les cartes d'une zone dans un même deck
+-- cette petite fonction regroupe les cartes d'une zone dans un même deck, et renvoie la liste des cartes groupées
 -- on ne s'en sert pas mais je voulais la montrer
+-- attention, group() agit aussi sur les autres objets groupables (jetons, ...).
 function groupCards(zone)
     local objects = zone.getObjects()
-    objects.group()
+    local table_cards = objects.group()
+    return table_cards
 end

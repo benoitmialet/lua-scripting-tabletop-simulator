@@ -120,27 +120,38 @@ end
     -- on peut en fait tester toutes les propriétés des objets listés (type, nom...)
     -- ici on va ici tester le type pour trouver un objet de type deck carte puis utiliser une fonction appropriée
     -- ATTENTION IMPORTANT, à retenir par coeur !!! :
-        -- si on utilise getObjects() sur une ZONE, on doit utiliser majoritairement des FONCTIONS GET:
+        -- si on utilise getObjects() sur une ZONE, on créée une liste d'objets. 
+        -- on accède donc directement à leurs propriétés.
+        -- on doit donc utiliser majoritairement des FONCTIONS GET:
             -- getName() pour obtenir le nom de l'objet
             -- getGMNotes() pour obtenir le nom caché
             -- getPosition() pour obtenir la position
-            -- .type pour obtenir son type
+            -- getTags() pour obtenir la liste des tags. Ex : {'tag1', 'tag2', 'tag3'} 
+            -- EXCEPTION : .type pour obtenir son type
             -- détail des fonctions get : https://api.tabletopsimulator.com/object/#get-functions
-        -- si on utilise getObjects() sur un CONTENEUR, on doit utiliser majoritairement des ATTRIBUTS:
+        -- si on utilise getObjects() sur un CONTENEUR, on créée une table avec des attributs (position =, size =, ...) 
+        -- on n'accède donc pas directement aux objets et on ne eut pas utiliser de fonctions get.
+        -- on doit donc utiliser des ATTRIBUTS:
             -- .name pour obtenir le nom de l'objet (si l'objet n'a aucun nom, .name renvoie le type d'objet)
             -- .gm_notes pour obtenir le nom caché
             -- .position pour obtenir la position
-            -- .type n'existe pas (retourne "nil")
+            -- .tags pour obtenir la liste des tags.
+            -- ATTENTION: .type n'existe pas (retourne "nil"), utilisez .name si besoin
             -- le détail complet : https://api.tabletopsimulator.com/object/#getobjects-containers
-        -- (vous cherchez une logique dans tout ça ? Moi aussi !)
+        -- (la logique est difficile à accepter, mais vous règlerez beaucoup de problèmes en retenant cela)
 -- TYPES D'OBJETS
     -- il existe énormément de types : 'Deck', 'Card', 'Token', 'Tile', 'Generic', 'Bag'...
     -- https://api.tabletopsimulator.com/built-in-object/#object-types.
     -- seuls quelques uns sont utilisés fréquemment
 -- ELSEIF et ELSE
-    -- elseif rajoute une condition si la précédente n'est pas vérifiée.
+    -- elseif rajoute une condition si les conditons précédentes ne sont pas vérifiées.
     -- else finit un test if et indique ce qu'il faut faire si aucune condition n'est vérifiée
     -- si ... sinon si ... sinon ... alors
+-- RETURN
+    -- l'instruction return permet deux choses simultanées. On peut l'utiliser pour l'une ou pour les deux :
+        -- 1) "renvoyer" une valeur (ou un objet, une table, etc.) à l'endroit du code ou la fonction a été appelée
+        -- 2) mettre fin immédiatement à la fonction en cours.
+    -- ici on va retourner l'objet "trouvé" dans la zone, car on pourrait en avoir besoin plus tard.
 function drawCardFromZone(zone)
     local objects = zone.getObjects()
     for i, obj in ipairs(objects) do
@@ -149,9 +160,11 @@ function drawCardFromZone(zone)
             params.position = obj.getPosition() + Vector({3, 0.5, 0})
             params.rotation = {0, 180, 0}
             obj.takeObject(params)
+            return obj
         elseif obj.type == 'Card' then
             obj.setRotationSmooth({0, 180, 0})
             obj.translate({3, 0.5, 0})
+            return obj
         end
     end
 end
