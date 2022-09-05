@@ -308,7 +308,7 @@ end
 
 -- [ACME] call objects with numeric pad and place them on the mouse cursor (requires : vec_sum)
 function onScriptingButtonDown(index, color)
-    -- place all resource bag objetcts in this array
+    -- place all resource bag objects in this array
     local source = {
         bag.pierres,
         bag.fers,
@@ -325,6 +325,16 @@ function onScriptingButtonDown(index, color)
 end
 
 
+--adds some small randomisation to a position. Must be added to a position Vector 
+    -- Arguments:
+        --radius: number, max distance from the center 
+        --positions_to_deal: array of zone positions, like {pos1, pos2, pos3}
+    -- returns a Vector object
+    function addJitter(radius)
+        local x_norm = (-2*math.log(math.random()))^0.5 * math.cos(2 * math.pi * math.random())/1.96 * radius
+        local z_norm = (-2*math.log(math.random()))^0.5 * math.sin(2 * math.pi * math.random())/1.96 * radius
+        return Vector ({x_norm,0,z_norm})
+    end
 
 -- [ACME] AUTOMATIC PLAYER RESOURCE COUNTING--------------------------------------------------------------------------
     -- counts and manage several ressources for each player
