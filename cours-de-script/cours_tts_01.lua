@@ -19,7 +19,6 @@
 
 -- NOTIONS A VOIR ABSOLUMENT AVANT DE COMMENCER A CODER ! (au moins en prendre connaissance):
     -- qu'est ce qu'une variable, une fonction (ou méthode), des arguments (ou paramètres). 
-        -- regarder quelques exemples en LUA.
     -- qu'est ce que le langage orienté objet. Qu'est ce qu'un objet, un attribut ou une fonction de l'objet.
     -- qu'est ce qu'une boucle "for" et un test "if"
     -- qu'est ce qu'une table, un index
