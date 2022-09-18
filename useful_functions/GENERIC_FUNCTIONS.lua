@@ -167,7 +167,7 @@ function hasValue (tab, val)
     return false
 end
 
--- [ACME] Shuffle a table
+-- [Author ?] Shuffle a table
 function shuffle(t)
     for i = 1, #t - 1 do
         local r = math.random(i, #t)
@@ -197,6 +197,20 @@ function print_r (t, indent, done)
     end
 end
 
+--[Author ?] Split character string into string list items
+    -- parameters
+        -- input_string: str, character string
+        -- separator: str, separator (e.g. "_")
+function split (input_string, separator)
+    if separator == nil then
+        separator = "%s"
+    end
+    local t={}
+    for str in string.gmatch(input_string, "([^"..separator.."]+)") do
+        table.insert(t, str)
+    end
+    return t
+end
 
 --CARDS/OBJECTS----------------------------------------------------------------------------------------------
 
@@ -211,6 +225,7 @@ function takeObjectsFromZone(zone, nb_to_take, position, rotation)
     local objects = zone.getObjects()
     for key, obj in ipairs(objects) do
         if obj.tag == 'Infinite' or obj.tag == 'Bag' or obj.tag == 'Deck' then
+            obj.shuffle()
             local rotation = rotation or obj.getRotation()
             local nb_left = obj.getQuantity()
             local jump = Vector({0, 0.6 ,0}) -- jump between objects
@@ -330,11 +345,18 @@ end
         --radius: number, max distance from the center 
         --positions_to_deal: array of zone positions, like {pos1, pos2, pos3}
     -- returns a Vector object
-    function addJitter(radius)
-        local x_norm = (-2*math.log(math.random()))^0.5 * math.cos(2 * math.pi * math.random())/1.96 * radius
-        local z_norm = (-2*math.log(math.random()))^0.5 * math.sin(2 * math.pi * math.random())/1.96 * radius
-        return Vector ({x_norm,0,z_norm})
-    end
+function addJitter(radius)
+    local x_norm = (-2*math.log(math.random()))^0.5 * math.cos(2 * math.pi * math.random())/1.96 * radius
+    local z_norm = (-2*math.log(math.random()))^0.5 * math.sin(2 * math.pi * math.random())/1.96 * radius
+    return Vector ({x_norm,0,z_norm})
+end
+
+
+
+
+
+
+
 
 -- [ACME] AUTOMATIC PLAYER RESOURCE COUNTING--------------------------------------------------------------------------
     -- counts and manage several ressources for each player
