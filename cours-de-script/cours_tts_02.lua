@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /02
--- MAJ 07/08/2022
+-- MAJ 24/09/2022
 -- Objectifs:
     -- Utilisation des boutons (suite)
     -- Distribuer des objets sur la table ou à des joueurs : les fonction takeObject() et deal()
@@ -23,21 +23,10 @@ end
     -- NB : en nommant les fonctions dans les boutons, on ne peut pas passer de paramètre ou d'argument. 
     -- C'est un inconvénient, mais il existe des astuces pour contourner ! 
 function activateButtonMenu()
-    button_deck.createButton({
-            click_function = "shuffleDeck1", -- la fonction qui va être déclenchée en cliquant sur le bouton
-            function_owner = Global, --où se trouve cette fonction (ici, dans l'environnement global)
-            label          = "Mélanger",
-            height          = 600,
-            width           = 2000,
-            font_size       = 300,
-            color           = {1, 1, 1, 1},
-            position        = {0, 0.3, 0},
-            rotation        = {0, 180, 0}
-        })
 
     button_deck.createButton({
-        click_function = "takeCardFromDeck1",
-        function_owner = Global, 
+        click_function = "takeCardFromDeck1", -- la fonction qui va être déclenchée en cliquant sur le bouton
+        function_owner = Global,  --où se trouve cette fonction (ici, dans l'environnement global)
         label          = "Piocher",
         height          = 600,
         width           = 2000,
@@ -50,7 +39,7 @@ function activateButtonMenu()
     button_setup.createButton({
         click_function = "setup",
         function_owner = Global, 
-        label          = "Démarrer",
+        label          = "Distribuer",
         height          = 1000,
         width           = 2000,
         font_size       = 300,
@@ -66,20 +55,6 @@ end
     -- La fonction shuffle() agit sur un conteneur (deck ou sac) et mélange son contenu
     -- Tout objet de type container possède cette fonction. On l'appele donc :  objet.shuffle()
     -- et c'est tout, pas besoin de plus !
-function shuffleDeck1()
-    deck1.shuffle()
-end
-
--- RENDRE LE CODE GENERIQUE
-    -- une meilleure façon décrire cette même fonction aurait été de la rendre générique, utilisable partout
-    -- Il faudrait alors l'appeler en écrivant : shuffleDeck(deck1),
-    -- ce qui n'est pas possible via un bouton...
-    -- la fonction qui suit est un exemple et ne sert pas dans notre code 
-function shuffleDeck(deck) -- ici on passe l'objet que l'on veut mélanger en paramètre, ou  "argument"
-    deck.shuffle()
-end
-
-
 -- La fonction TAKEOBJECT
     -- La fonction takeObject() sert à piocher un objet d'un conteneur (sac ou deck).
     -- C'est une fonction de base de TTS.
@@ -90,6 +65,7 @@ end
     -- Pour faciliter l'écriture, on prépare donc cette table à l'avance que l'on nommera "params"
     -- On l'injectera ensuite comme paramètre dans la fonction takeObject()
 function takeCardFromDeck1()
+    deck1.shuffle()
     local params = {
         position = {10.25, 1.23, 4.75},
         rotation = {0, 180, 0}
@@ -114,6 +90,7 @@ end
         -- ma_table = {}
         -- ma_table.valeurs = {1,2,3}
 function takeCardFromDeck1()
+    deck1.shuffle()
     local params = {}
     params.position = deck1.getPosition() + Vector({3, 1, 0}) -- on prend la position du deck et on décale 
     params.rotation = {0, 180, 0}

@@ -122,6 +122,13 @@ function howToLoop()
         print(i)
     end
 
+    print("------\nboucle while :")
+    i = 1
+    while i < 6 do
+        print(i)
+        i = i + 1
+    end
+
     print("------\nboucle ipair (afficher l\'index et la valeur) :")
     for index, value in ipairs(nb_cards_to_deal) do
         print("Pour une partie à " .. index .. " joueur(s), chaque joueur pioche " .. value .. " cartes.")
