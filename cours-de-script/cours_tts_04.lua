@@ -3,6 +3,7 @@
 -- MAJ 07/08/2022
 -- Objectif:
 -- Comprendre les test if...then
+-- Utiliser la fonction getObjects
 ----------------------------------------------------------------------------------------------------
 
 -- TEST IF
@@ -72,12 +73,19 @@ function setupPlayers()
     nb_players = #getSeatedPlayers()
     deck1.deal(nb_cards_to_deal[nb_players])
 
+    local message = nil
     if nb_players <= 3 then
         for i = 1, 5 do
-            takeCardFromDeck1() --voir plus bas pour cette fonction
+            drawCardFromDeck(deck1) --voir plus bas pour cette fonction
         end
-        broadcastToAll("5 cartes ont été défaussées.")
+        message = "5 cartes ont été défaussées."
+    elseif nb_players <= 5 then
+        message = "Aucune carte n'a été défaussée."
+    else
+        message = ''
     end
+
+    broadcastToAll(message)
 end
 
 -- takeCardFromDeck1() pioche une carte et la place dans la défausse (voir cours_tts_03.lua)
@@ -95,18 +103,20 @@ end
         -- "sinon", on l'interromp avec "return 0" (on retourne un résultat, peu importe lequel, cela stoppe la fonction)
         -- if getObjectFromGUID(deck1_guid) est la même chose que if getObjectFromGUID(deck1_guid) == true
         -- cela peut porter à confusion, bien relire ce qui suit et et s'y habituer !
-function takeCardFromDeck1()
-    if getObjectFromGUID(deck1_guid) then
-    else
-        return 0
+function drawCardFromDeck(deck1)
+    if not getObjectFromGUID(deck1_guid) then
+        return
     end
     local params = {}
-    params.position = deck1.getPosition()
-    params.position = params.position + Vector({3, 1, 0})
+    params.position = deck1.getPosition() + Vector({3, 1, 0})
     params.rotation = {0, 180, 0}
     deck1.takeObject(params)
 end
 
+
+function pickQueenFromDeck1()
+    pickQueenFromDeck(deck1)
+end
 
 -- CHERCHER UN OBJET PARTICULIER DANS UN CONTAINER
     -- on veut créer un fonction pickQueenFromDeck1() qui pioche une reine
@@ -125,7 +135,7 @@ end
     -- Elle retourne une table que l'on récupère pour la parcourir
 -- BREAK
     -- break sert à interrompre une boucle for 
-function pickQueenFromDeck1()
+function pickQueenFromDeck(deck)
     local cards = deck1.getObjects()
     for index, object in ipairs(cards) do
         if object.name == 'reine' then

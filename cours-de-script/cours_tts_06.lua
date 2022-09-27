@@ -87,7 +87,7 @@ function setupTable()
     }
 
     local delay_add = 0.15
-    local delay = delay_add
+    local delay = 0
     for i, position in ipairs(position_card) do
         Wait.time(function()
             local params = {}
