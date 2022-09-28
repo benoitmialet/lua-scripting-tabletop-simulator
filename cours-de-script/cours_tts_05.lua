@@ -200,3 +200,26 @@ function hasValue (tab, val)
     end
     return false
 end
+
+-- une autre fonction très utile pour imprimer le contenu d'une table
+-- par exemple, après avoir fait objects = getObjects(), affichez le contenu de la table avec print_r(objects)
+-- (récupérée sur le site stackoverflow.com)
+function print_r (t, indent, done)
+    done = done or {}
+    indent = indent or ' '
+    local nextIndent -- Storage for next indentation value
+    for key, value in pairs (t) do
+    if type (value) == "table" and not done [value] then
+        nextIndent = nextIndent or
+            (indent .. string.rep(' ',string.len(tostring (key))+2))
+            -- Shortcut conditional allocation
+        done [value] = true
+        print (indent .. "[" .. tostring (key) .. "] => Table {");
+        print  (nextIndent .. "{");
+        print_r (value, nextIndent .. string.rep(' ',2), done)
+        print  (nextIndent .. "}");
+    else
+        print  (indent .. "[" .. tostring (key) .. "] => " .. tostring (value).."")
+    end
+    end
+end
