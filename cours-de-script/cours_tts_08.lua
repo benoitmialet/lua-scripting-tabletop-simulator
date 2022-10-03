@@ -138,5 +138,6 @@ function firstPlayer()
     Wait.time(function ()
         broadcastToAll(Player[first_player_color].steam_name..' joue en premier',first_player_color)
     end,3)
+    return first_player_color
 end
 

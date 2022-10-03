@@ -2,6 +2,7 @@
 -- SCRIPTER POUR TABLETOP SIMULATOR /07
 -- MAJ 07/08/2022
 -- Objectifs:
+    -- Bien utiliser les couleurs
     -- Utiliser des fonctionnalités avancées sur les boutons
         -- les modifier avec editButton(), les supprimer avec clearButtons()
         -- reconnaître le joueur ayant cliqué et l'objet cliqué
@@ -31,12 +32,12 @@ function activateButtonMenu()
         height          = 1000,
         width           = 2000,
         font_size       = 300,
-        color           = {1, 1, 1, 1},
+        color           = 'Green',
         position        = {0, 0.3, 0},
         rotation        = {0, 180, 0}
     })
 
-    button_deck.createButton({
+    button_deck.createButton({  --index = 0
         click_function = "takeCardFromDeck1",
         function_owner = Global,
         label          = "Défausser",
@@ -48,7 +49,7 @@ function activateButtonMenu()
         rotation        = {0, 180, 0}
     })
 
-    button_deck.createButton({ -- bouton décoratif
+    button_deck.createButton({ -- bouton décoratif, index = 1
         click_function = "doNothing",
         function_owner = Global,
         label          = "Texte décoratif :)",
@@ -64,16 +65,6 @@ end
 
 --fonction reliée au bouton décoratif, qui ne fait rien
 function doNothing()
-end
-
--- IDENTIFIER LE JOUEUR AYANT CLIQUE SUR UN BOUTON ET QUEL OBJET EST CLIQUE
-    -- TOUTE fonction lancée de puis un bouton inclut part défaut deux arguments. On les nomme comme on veut :
-        -- Le 1er est l'objet sur lequel le bouton cliqué se situe (on ne va pas l'utiliser)
-        -- Le 2e est la couleur du joueur ayant cliqué. On va l'utiliser pour savoir à qui envoyer la carte
-    -- on peut ajouter autant d'arguments que l'on veut ensuite (ici pas besoin)
-function pickFromDeck(object, color)
-    deck1.dealToColor(1, color)
-    broadcastToAll("Le joueur "..color.." a pioché une carte", color)
 end
 
 
@@ -119,6 +110,17 @@ function setupTable()
 end
 
 
+-- IDENTIFIER LE JOUEUR AYANT CLIQUE SUR UN BOUTON ET QUEL OBJET EST CLIQUE
+    -- TOUTE fonction lancée de puis un bouton inclut part défaut deux arguments. On les nomme comme on veut :
+        -- Le 1er est l'objet sur lequel le bouton cliqué se situe (on ne va pas l'utiliser)
+        -- Le 2e est la couleur du joueur ayant cliqué. On va l'utiliser pour savoir à qui envoyer la carte
+    -- on peut ajouter autant d'arguments que l'on veut ensuite (ici pas besoin)
+    function pickFromDeck(object, color)
+        deck1.dealToColor(1, color)
+        broadcastToAll(Player[color].steam_name.." a pioché une carte", color)
+    end
+
+
 -- le bouton a générer automatiquement sur chaque carte
 function addPickButton(card)
     card.createButton({
@@ -150,27 +152,31 @@ end
 function pickCard(card, color)
     card.deal(1,color)
     card.clearButtons()
-    Wait.time(function ()
-        local objects = zone_game.getObjects()
-        -- local position = deck1.positionToWorld({3, 1, 0})
-        local position = deck1.getPosition() + Vector({3, 1, 0})
-        for index, obj in ipairs(objects) do
-            if obj.type == 'Card' then
-                obj.clearButtons()
-                obj.setPositionSmooth(position)
-            end
-        end
+    Wait.time(function()
+        discardCards(zone_game, deck1)
     end,1)
 end
 
+-- POSITIONTOWORLD
+    -- positionToWorld() définit une position
+    -- elle prend la position de l'objet, et y ajoute un Vector
+    -- c'est preque comme additionner la position + un Vector (voir les cours précédents)
+    -- seulement, le vecteur prendra comme référence l'orientation de l'objet (pas très simple à appréhender)
+function discardCards(zone, deck)
+    local objects = zone.getObjects()
+    -- local position = deck.positionToWorld({3, -1, 0})
+    local position = deck.getPosition() + Vector({3, 1, 0})
+    for index, obj in ipairs(objects) do
+        if obj.type == 'Card' or obj.type == "Deck"  then
+            obj.clearButtons()
+            obj.setPositionSmooth(position)
+        end
+    end
+end
 
--- (cf cours_tts_02.lua)
+
 function takeCardFromDeck1()
-    local params = {}
-    params.position = deck1.getPosition()
-    params.position = params.position + Vector({3, 1, 0})
-    params.rotation = {0, 180, 0}
-    deck1.takeObject(params)
+    discardCards(zone_game, deck1)
 end
 
 

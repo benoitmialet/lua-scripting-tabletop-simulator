@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /06
--- MAJ 07/08/2022
+-- MAJ 03/10/2022
 -- Objectifs:
     -- Utiliser la sauvegarde de données
     -- Gérer le timing avec Wait.time()
@@ -25,8 +25,7 @@ deck1_guid = 'c9c4c8'
         -- en effet, si la partie est déja mise en place, ce bouton n'a pas lieu d'apparaitre !
         -- faites le test : cliquez sur "installer la table", sauvegardez puis recharger la partie. 
 game_data = {
-    setup_done = false,
-    round_nb = 1,
+    setup_done = false
 }
 
 function onSave()
@@ -102,8 +101,53 @@ function setupTable()
     game_data.setup_done = true
 end
 
--- NB: La fonction Wait.time() donne l'illusion que le code placé en paramètre va "attendre" avant d'être exécuté
--- En réalité il n'en est rien. Tout le bloc de code sera exécuté instantément. 
--- C'est son processus qui va être décalé dans le temps. Cela peut crééer des surprises inattendues.
--- Si vous cherchez a réellement décaler des processus dans le temps, utilisez un Timer (voir le cours 09)
--- Wait.time() est cependant parfait donner un joli rendu animé au positionnement d'objets.
+
+function setupTable()
+    local pos = deck1.positionToWorld({-20, -1, -7})
+    for i = 1, 3 do
+        for i = 1, 6 do
+            local params = {}
+            params.position = pos
+            params.rotation = {0, 180, 0}
+            deck1.takeObject(params)
+            pos = pos + Vector({3, 0, 0})
+        end
+        pos = pos + Vector({-18, 0, -4})
+    end
+    button_setup.clearButtons()
+    game_data.setup_done = true
+end
+
+
+-- ATTENTION : La fonction Wait.time() donne l'illusion que le code placé en paramètre va "attendre" avant d'être exécuté
+    -- En réalité, tout le bloc de code sera exécuté instantément. 
+    -- C'est son processus qui va être décalé dans le temps. Cela peut crééer des surprises inattendues.
+    -- Si vous cherchez a réellement décaler des processus dans le temps, utilisez un Timer (voir le cours 09) ou des coroutines.
+    -- Wait.time() est cependant parfait donner un joli rendu animé au positionnement d'objets.
+    -- Pour illustrer le problème, on va prendre un autre exemple de disposition de carte, basée sur le calcul
+        -- c'est plus compliqué à faire mais ne nécessite pas de créer la table position_card au préalable
+        -- c'est donc préférable s'il y a beaucoup de positions à couvrir avec des espacements réguliers.
+        -- ici on distribue par exemple des cartes sur 3 rangée et 6 colonnes
+        -- il faut pour cela créer une boucle (les colonnes) à l'intérieur d'une autre boucle (les lignes)
+        -- on part de la position du deck décalée de 20 unités vers la gauche
+        -- on décale de 3 vers la droite à chaque boucle sur la même ligne
+        -- on revient à la ligne en décalant de 18 vers la gauche et 4 vers le bas
+    -- Décommentez la fonction et essayez d'uutiliser Wait.time(), vous comprendrez vite que c'est l'enfer ! :D
+-- POSITIONTOWORLD
+    -- positionToWorld() définit une position
+    -- elle prend la position de l'objet, et y ajoute un Vector
+    -- c'est preque comme additionner la position + un Vector (voir les cours précédents)
+
+    -- function setupTable()
+--     local pos = deck1.positionToWorld({-20, -1, -7})
+--     for i = 1, 3 do
+--         for i = 1, 6 do
+--             local params = {}
+--             params.position = pos
+--             params.rotation = {0, 180, 0}
+--             deck1.takeObject(params)
+--             pos = pos + Vector({3, 0, 0})
+--         end
+--         pos = pos + Vector({-18, 0, -4})
+--     end
+-- end

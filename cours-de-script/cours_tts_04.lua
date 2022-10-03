@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /04
--- MAJ 07/08/2022
+-- MAJ 28/09/2022
 -- Objectif:
 -- Comprendre les test if...then
 -- Utiliser la fonction getObjects

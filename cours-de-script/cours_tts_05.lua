@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /05
--- MAJ 07/08/2022
+-- MAJ 01/10/2022
 -- Objectifs:
 -- Utiliser les Zones de script
 -- Tester les propriétés des objets (name, type, etc.)
