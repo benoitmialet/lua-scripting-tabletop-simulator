@@ -321,24 +321,24 @@ function findEmptyPosition(zone_to_deal, positions_to_deal)
     end
 end
 
--- [ACME] call objects with numeric pad and place them on the mouse cursor (requires : vec_sum)
+-- [ACME] call objects with numeric pad and place them on the mouse cursor
 function onScriptingButtonDown(index, color)
     -- place all resource bag objects in this array
     local source = {
-        bag.pierres,
-        bag.fers,
-        bag.rochecoeurs
+        bag_token,
+        -- bag.fers,
+        -- bag.rochecoeurs
     }
     if index > #source then return end -- stop the function
-    local params={}
-    params.position = getPointerPosition(color) + Vector ({0,2,0})
-    params.rotation = {0, getPointerRotation(color), 0}
-    if source[index].getQuantity()==0 then
-        broadcastToColor('Cette ressource est épuisée',color,color)
-    else source[index].takeObject(params)
+    if source[index].getQuantity() == 0 then
+        broadcastToColor('Cette ressource est épuisée', color, color)
+    else
+        local params={}
+        params.position = getPointerPosition(color) + Vector ({0,2,0})
+        params.rotation = {0, getPointerRotation(color), 0}
+        source[index].takeObject(params)
     end
 end
-
 
 --adds some small randomisation to a position. Must be added to a position Vector 
     -- Arguments:

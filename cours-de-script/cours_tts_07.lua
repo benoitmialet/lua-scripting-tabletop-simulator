@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /07
--- MAJ 07/08/2022
+-- MAJ 03/10/2022
 -- Objectifs:
     -- Bien utiliser les couleurs
     -- Utiliser des fonctionnalités avancées sur les boutons
@@ -93,20 +93,19 @@ function setupTable()
         params.position = position
         params.rotation = {0, 180, 0}
         local card = deck1.takeObject(params)
-
         addPickButton(card)
-
-        button_deck.editButton({
-            index           = 1,        -- (obligatoire)
-            click_function  = 'pickFromDeck',
-            label           = 'Piocher',
-            height          = 600,
-            width           = 2000,
-            font_size       = 300,
-            color           = {1, 1, 1, 1},
-            font_color      = {0, 0, 0, 1}
-        })
     end
+
+    button_deck.editButton({
+        index           = 1,        -- (obligatoire)
+        click_function  = 'pickFromDeck',
+        label           = 'Piocher',
+        height          = 600,
+        width           = 2000,
+        font_size       = 300,
+        color           = {1, 1, 1, 1},
+        font_color      = {0, 0, 0, 1}
+    })
 end
 
 
@@ -115,10 +114,10 @@ end
         -- Le 1er est l'objet sur lequel le bouton cliqué se situe (on ne va pas l'utiliser)
         -- Le 2e est la couleur du joueur ayant cliqué. On va l'utiliser pour savoir à qui envoyer la carte
     -- on peut ajouter autant d'arguments que l'on veut ensuite (ici pas besoin)
-    function pickFromDeck(object, color)
-        deck1.dealToColor(1, color)
-        broadcastToAll(Player[color].steam_name.." a pioché une carte", color)
-    end
+function pickFromDeck(object, color)
+    deck1.dealToColor(1, color)
+    broadcastToAll(Player[color].steam_name.." a pioché une carte", color)
+end
 
 
 -- le bouton a générer automatiquement sur chaque carte

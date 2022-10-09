@@ -1,13 +1,21 @@
+-- [ACME] RIVER OF CARDS 
+
+-------------------------------------------------------------------------------------------------------------
 -- SETTINGS
 ---------------------------------------------------------------
 -- card zones:   LAST <-----        -------> FIRST
-zone_guids = {'4c860a','60aace','1bdab1','0d140e','631b56'}
+zone_guids = {'4ade93','224e55','6abcd2','d65285'}
 -- draw zone
-zone_draw = '8ff2c8'
+zone_draw = '05fe00'
 -- card positions:   LAST <-----        -------> FIRST
-pos_cards = {{-22.50, 1.03, 8.50}, {-22.50, 1.03, 4.50}, {-22.50, 1.03, 0.50}, {-22.50, 1.03, -3.50}, {-22.50, 1.03, -7.50}}
+pos_cards = {{5.88, 1.04, 8.82},{2.94, 1.04, 8.82},{0, 1.04, 8.82},{-2.94, 1.04, 8.82}}
 -- discard position
-pos_discard = {-28.30, 1.12, 0.50}
+pos_discard = {11.76, 2, 8.82}
+
+--OPTIONS: Choose an option among following ones:
+    -- refill_option 1:     Refill cards manually
+    -- refill_option 2:     Refill cards automatically after pick
+refill_option = 1
 ---------------------------------------------------------------
 
 
@@ -15,7 +23,7 @@ fillslide = {}
 fillslide.click_function = 'FillSlideAdvAction'
 fillslide.label = ' Piocher \n Décaller'
 fillslide.function_owner = self
-fillslide.rotation = {0, 90, 0}
+fillslide.rotation = {0, 180, 0}
 fillslide.position = { 0, 0.3, 0 }
 fillslide.font_size = 250
 fillslide.width = 1400
@@ -60,7 +68,8 @@ function FillSlideAdvAction()
         if (objects[j] == nil)
             then full_row = false
             break
-        else full_row = true
+        else
+            full_row = true
         end
     end
 
@@ -76,61 +85,90 @@ function FillSlideAdvAction()
             if main_deck.type == 'Deck' then
                 local params = {}
                 params.position = pos_cards[nb_positions]
-                params.rotation = {0, 270, 0}
+                params.rotation = {0, 180, 0}
                 objects[nb_positions] = main_deck.takeObject(params)
+                addPickButton(objects[nb_positions])
             else
                 main_deck.setPositionSmooth(pos_cards[nb_positions])
-                main_deck.setRotation{0, 270, 0}
+                main_deck.setRotation{0, 180, 0}
                 main_deck = nil
             end
         end
     end
 
-    -- fill empty spaces (for now without a deck)
     for j=1, nb_positions, 1 do
+        -- fill empty spaces with previous cards in the river
         if (objects[j] == nil) then
             for k=j+1, nb_positions, 1 do
                 if objects[k] ~= nil then
-                getObjectFromGUID(objects[k]).setPositionSmooth(pos_cards[j])
-                getObjectFromGUID(objects[k]).setRotation({0, 270, 0})
-                objects[j] = objects[k]
-                objects[k] = nil
-                break
+                    getObjectFromGUID(objects[k]).setPositionSmooth(pos_cards[j])
+                    getObjectFromGUID(objects[k]).setRotation({0, 180, 0})
+                    objects[j] = objects[k]
+                    objects[k] = nil
+                    break
                 end
             end
         end
 
-        -- fill empty spaces (with the help of a deck), cuz we couldn't do it with cards
+        -- fill empty spaces (with the help of a deck or card)
         if objects[j] == nil then
             if main_deck ~= nil then
                 if main_deck.type == 'Deck' then
-                local params = {}
-                params.position = pos_cards[j]
-                params.rotation = {0, 270, 0}
-                objects[j] = main_deck.takeObject(params)
+                    local params = {}
+                    params.position = pos_cards[j]
+                    params.rotation = {0, 180, 0}
+                    objects[j] = main_deck.takeObject(params)
+                    addPickButton(objects[j])
                 else
-                main_deck.setPositionSmooth(pos_cards[j])
-                main_deck.setRotation{0, 270, 0}
-                main_deck = nil
+                    main_deck.setPositionSmooth(pos_cards[j])
+                    main_deck.setRotation{0, 180, 0}
+                    main_deck = nil
                 end
             end
         end
     end
 
     -- fill empty (nb-2)th space (from deck)
-    if (objects[nb_positions] == nil) then
-        if main_deck ~= nil then
-            if main_deck.type == 'Deck' then
-            local params = {}
-            params.position = pos_cards[nb_positions-2]
-            params.rotation = {0, 270, 0}
-            objects[nb_positions-2] = main_deck.takeObject(params)
-            else
-            main_deck.setPositionSmooth(pos_cards[nb_positions])
-            main_deck.setRotation{0, 270, 0}
-            main_deck = nil
-            end
-        end
-    end
+    -- if (objects[nb_positions] == nil) then
+    --     if main_deck ~= nil then
+    --         if main_deck.type == 'Deck' then
+    --             local params = {}
+    --             params.position = pos_cards[nb_positions-2]
+    --             params.rotation = {0, 180, 0}
+    --             objects[nb_positions-2] = main_deck.takeObject(params)
+    --             addPickButton(objects[nb_positions-2])
+    --         else
+    --             main_deck.setPositionSmooth(pos_cards[nb_positions])
+    --             main_deck.setRotation{0, 180, 0}
+    --             main_deck = nil
+    --         end
+    --     end
+    -- end
+end
 
+
+function addPickButton(card)
+    card.createButton({
+        click_function  = "pickCard",
+        function_owner  = self,
+        label           = "V",
+        position        = {0, 0.5, 2},
+        rotation        = {0,180,0},
+        width           = 300,
+        height           = 20,
+        font_size       = 150,
+        color           = {0.15, 0.15, 0.15, 0.8},
+        font_color      = {1,1,1,1},
+        tooltip         = "Choisir",
+    })
+end
+
+function pickCard(card, color)
+    card.deal(1,color)
+    card.clearButtons()
+    if refill_option == 2 then
+        Wait.time(function()
+            FillSlideAdvAction()
+        end,0.3)
+    end
 end
