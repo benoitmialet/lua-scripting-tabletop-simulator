@@ -7,58 +7,79 @@
 
 bag_token_1_guid = '200cdb'
 bag_token_2_guid = 'ab24e9'
+bag_grey = 'e3e283'
 zone_garbage_guid = ""
 
 function onLoad()
     bag_token_1 = getObjectFromGUID(bag_token_1_guid)
     bag_token_2 = getObjectFromGUID(bag_token_2_guid)
+    bag_grey = getObjectFromGUID(bag_grey)
     zone_garbage = getObjectFromGUID(zone_garbage_guid)
+    quantity = bag_grey.getQuantity()
+    local data = {click_function = "doNothing", function_owner = Global, label = quantity, position = {0, 1, 3}, rotation = {0,180,0}, scale = {0.5, 0.5, 0.5}, width = 6000, height = 1000, font_size = 900}
+    bag_grey.createButton(data)
 end
 
 
+function doNothing()
+end
 
-function onObjectEnterContainer(container, enter_object)
-    if container == bag_token_1 then
+
+function onObjectEnterContainer(container, object)
+    if container == bag_grey then
         container.shuffle()
+        bag_grey.editButton({
+            index = 0,
+            label = bag_grey.getQuantity()
+        })
     end
 end
 
-function onObjectLeaveContainer(container, enter_object)
-    if container == bag_token_1 then
-        broadcastToAll(enter_object.name .. " a été retiré du sac")
+function onObjectLeaveContainer(container, leave_object)
+    if container == bag_grey then
+        broadcastToAll(leave_object.name .. " a été retiré du sac")
+        bag_grey.editButton({
+            index = 0,
+            label = bag_grey.getQuantity()
+        })
     end
 end
 
 
 
--- [ACME] call objects with numeric pad and place them on the mouse cursor
-function onScriptingButtonDown(index, color)
-    -- place all resource bag objects in this array
+function onScriptingButtonDown(index, player_color)
     local source = {
         bag_token_1,
-        bag_token_2
+        bag_token_2,
+        bag_grey
     }
-    if index > #source then return end -- stop the function
+    if index > #source then
+        return
+    end
     if source[index].getQuantity() == 0 then
-        broadcastToColor('Cette ressource est épuisée', color, color)
+        broadcastToColor('Cette ressource est épuisée !', player_color, player_color)
     else
-        local params={}
-        params.position = getPointerPosition(color) + Vector ({0,2,0})
-        params.rotation = {0, getPointerRotation(color), 0}
+        local params = {}
+        params.position = getPointerPosition(player_color) + Vector ({0, 2, 0})
+        params.rotation = {0, getPointerRotation(player_color), 0}
         source[index].takeObject(params)
     end
 end
 
+
+-- Afficher le nom du joueur sur son pion. Code à placer dans l'objet : 
+
 -- function onLoad()
---     color = 'Green'
+--     color = 'White' -- donnez ici la couleur du joueur possédant l'objet
 -- end
 
 -- function onHover()
 --     self.setName(Player[color].steam_name)
+--     self.highlightOn(color, 2)
 -- end
 
 
-function onObjectEnterScriptingZone(zone, enter_object)
+function onObjectEnterZone(zone, enter_object)
     if zone == zone_garbage then
         if enter_object.hasTag('monnaie1') then
             -- enter_object.setPositionSmooth(bag_damned.getPosition() + Vector({0, 3, 0}))
