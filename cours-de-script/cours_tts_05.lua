@@ -178,11 +178,11 @@ end
     -- 4) et on les détruit
 -- La fonction DESTRUCT
     -- destruct() permet de détruire un objet. On ne pourra plus faire appel à lui.
-function destructMissingPlayers()
+function destructMissingPlayers(player_table)
     local seated_players = getSeatedPlayers()
-    for color, _ in pairs(table_players) do
+    for color, _ in pairs(player_table) do
         if hasValue(seated_players, color) == false then
-            local objects = table_players[color].zone.getObjects()
+            local objects = player_table[color].zone.getObjects()
             for i, obj in ipairs(objects) do
                 obj.destruct()
             end

@@ -1,16 +1,14 @@
 ----------------------------------------------------------------------------------------------------
--- SCRIPTER POUR TABLETOP SIMULATOR /09
+-- SCRIPTER POUR TABLETOP SIMULATOR /09 - Application
 -- MAJ 07/08/2022
 -- Objectifs:
     -- Créer un système de comptage de ressources
-    -- Générer des objets (zone)
-    -- Utiliser des fonctions d'événement
 ----------------------------------------------------------------------------------------------------
 
 -- on peut imaginer une infinité de méthodes pour créer un système de comptage de ressources.
-    -- le système que l'on va utiliser fonctionne très bien et est léger
-    -- il consiste à créer une zone, surveiller les ressources
-    -- qui entrent ou qui sortent de cette zone, puis afficher les compteurs sur un bouton.
+    -- le système que l'on va utiliser fonctionne bien et il est léger
+    -- il consiste à créer une zone, surveiller les ressources qui
+    -- entrent ou qui sortent de cette zone, puis afficher les compteurs sur un bouton.
 -- on va devoir pour cela :
     -- créer des boutons sur la tuile de comptage pour afficher la quantité de ressources 
     -- Générer une zone au dessus de la tuile de comptage pour détecter les ressources
@@ -19,7 +17,7 @@
     -- mettre à jour les boutons d'affichage
 -- notre tuile de comptage sera par exemple le plateau du joueur vert.
 -- essayez de placer des jetons de monnaie sur le plateau et regardez le compteur.
--- NB : ce code est facilement transportable sur vos modules.
+-- NB : ce code est facilement transposable sur vos modules.
     -- pour utiliser une meilleure version de la tuile, plus complexe mais plus simple à iplémenter,
     -- copiez le code du fichier COUNTING_TILE.lua (dossier useful_functions) dans un objet plat
 
@@ -84,13 +82,7 @@ end
 function doNothing()
 end
 
--- FONCTIONS EVENEMENT
-    -- Les fonctions evenement se déclenchent sur un évenement (clic souris, collision entre deux objets, etc.)
-    -- Il en existe une grande quantité : https://api.tabletopsimulator.com/events/
-    -- onObjectEnterScriptingZone() se déclenchera à l'entrée de tout objet dans une zone de  script.
-    -- on va l'utiliser comme suivant :
-        -- on sélectionne uniquement la zone qui nous intéresse (zone_capture)
-        -- on utilise les GMNotes des objets plutot que le nom.
+
 -- GMNOTES
     -- Les GMNotes sont un nom "caché" que l'on peut donner à un objet uniquement en étant le joueur GM (noir)
     -- et en faisant clic droit sur l'objet.

@@ -25,6 +25,13 @@ function doNothing()
 end
 
 
+-- FONCTIONS EVENEMENT
+    -- Les fonctions evenement se déclenchent sur un évenement (clic souris, collision entre deux objets, etc.)
+    -- Il en existe une grande quantité : https://api.tabletopsimulator.com/events/
+    -- onObjectEnterScriptingZone() se déclenchera à l'entrée de tout objet dans une zone de  script.
+    -- on va l'utiliser comme suivant :
+        -- on sélectionne uniquement la zone qui nous intéresse (zone_capture)
+        -- on utilise les GMNotes des objets plutot que le nom.
 function onObjectEnterContainer(container, object)
     if container == bag_grey then
         container.shuffle()

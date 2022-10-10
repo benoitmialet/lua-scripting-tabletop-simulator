@@ -224,17 +224,17 @@ end
 function takeObjectsFromZone(zone, nb_to_take, position, rotation)
     local objects = zone.getObjects()
     for key, obj in ipairs(objects) do
-        if obj.tag == 'Infinite' or obj.tag == 'Bag' or obj.tag == 'Deck' then
+        if obj.type == 'Infinite' or obj.type == 'Bag' or obj.type == 'Deck' then
             obj.shuffle()
             local rotation = rotation or obj.getRotation()
             local nb_left = obj.getQuantity()
-            local jump = Vector({0, 0.6 ,0}) -- jump between objects
+            if  obj.type == 'Infinite' then nb_left = nb_to_take end
             local table_obj_dealt = {}
             for i = 1, math.min(nb_left, nb_to_take)     do
-                local obj_dealt = obj.takeObject({
-                    position = Vector(position) + jump * (i+1),
-                    rotation = rotation
-                })
+                local obj_dealt = obj.takeObject()
+                local jump = Vector({0, obj_dealt.getBoundsNormalized().size.y * 1, 0}) * (i+1) -- jump between objects
+                obj_dealt.setPositionSmooth(Vector(position) + jump)
+                obj_dealt.setRotationSmooth(rotation)
                 table.insert(table_obj_dealt, obj_dealt)
             end
             local nb_missing = nb_to_take - nb_left
@@ -243,10 +243,10 @@ function takeObjectsFromZone(zone, nb_to_take, position, rotation)
             end
             return table_obj_dealt
         else
-            if obj.tag == 'Card' then
+            if obj.type == 'Card' then
                 local rotation = rotation or obj.getRotation()
-                obj.setPositionSmooth(position)
-                obj.setRotationSmooth(rotation)
+                obj.setPositionSmooth(Vector(position))
+                obj.setRotationSmooth(Vector(rotation))
                 if nb_to_take > 1 then
                     broadcastToAll((nb_to_take - 1).." objects are missing")
                 end
