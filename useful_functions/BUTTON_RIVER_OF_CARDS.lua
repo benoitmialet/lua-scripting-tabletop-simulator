@@ -76,6 +76,7 @@ function FillSlideAdvAction()
     -- slide the row, if full
     if (full_row == true) then
         getObjectFromGUID(objects[1]).setPositionSmooth(pos_discard)
+        getObjectFromGUID(objects[1]).clearButtons()
         for j=2, nb_positions, 1 do
             getObjectFromGUID(objects[j]).setPositionSmooth(pos_cards[j-1])
             objects[j-1] = objects[j]
