@@ -5,6 +5,18 @@
     -- Utiliser les tags
 ----------------------------------------------------------------------------------------------------
 
+-- Les tags sont un attribut plus complet que les autres (name, GM_notes, description, ...) car
+-- ils permettent plus de possibilités et de flexibilité avec vos scripts.
+-- Cependant, il faudra bien sûr tagguer ses objets au préalablle sur votre module.
+-- Tout comme pour les autres attributs, on n'accède pas de la même façon aux tags des objets situés
+-- dans l'environnement global ("extérieurs") qu'aux tags des objets contenus dans des conteneurs:
+    -- depuis l'environnement global : https://api.tabletopsimulator.com/object/#tag-functions
+    -- depuis un conteneur : https://api.tabletopsimulator.com/object/#tag-functions
+-- Ce cours prend comme exemple un calculateur de score mais les tags s'utilsent pour tout.
+--
+
+
+-- un dictionnaire permettant de convertir des tags en chiffres (score)
 tag_to_points = {
     ["as"]      = 1,
     ["deux"]    = 2,
@@ -44,21 +56,33 @@ function activateButtonMenu()
     })
 end
 
+-- une fonction intermédiaire pour appeler la fonction getScoreInZone
 function getScore()
     local nb_figures, score = getScoreInZone(zone_game)
     print("Figures :",nb_figures, "\nScore : ",score)
-    -- exemple d'utilisation de splitText : 
+    -- exemple d'utilisation de splitText (voir fin du cours): 
     -- table_text = splitText("roi_10", "_")
     -- log(table_text)
 end
 
+
 -- CALCUL DE SCORE
+    -- getScoreInZone calcule le score dans une zone ainsi que le nombre de figures (roi, valet...)
+    -- on parcourt les objets, puis pour chaque objet :
+        -- on vérifie s'il possède un tag de figure
+        -- on parcourt les tags à la recherche de tags de score (cf le dictionnaire en début de cours)
+-- HASTAG
+    -- vérifie la présence d'un tag parmi les tags de l'objet. C'st l'équivalent de == name
+-- GETTAGS
+    -- renvoie tous les tags de l'objet sous forme de table
+-- RETOURNER PLUSIEURS VALEURS AVEC RETURN
+    -- il est possible de le faire !
 function getScoreInZone(zone)
     local nb_figures = 0
     local score = 0
     local objects = zone.getObjects()
     for _, obj in ipairs(objects) do
-        if obj.type == "Deck" or obj.type == "Bag" or obj.type == "Infinite" then
+        if obj.type == "Deck" or obj.type == "Bag" then
             local nb_figures_cont, score_cont = getScoreInContainer(obj)
             nb_figures = nb_figures + nb_figures_cont
             score = score + score_cont
@@ -80,6 +104,8 @@ function getScoreInZone(zone)
     return nb_figures, score
 end
 
+-- getScoreInContainer calcule le score des objets contenus dans un conteneur (deck, sac)
+-- ATTENTION, ici on ne peut que récupérer tous les tags d'un objet avec l'attribut .TAGS
 function getScoreInContainer(container)
     local nb_figures = 0
     local score = 0
@@ -130,6 +156,8 @@ end
         -- input_string: chaine de caractère
         -- separator : élément séparateur de chaînes (chaîne de caractère)
     -- retourne une table de chaines de caractères séparées {chaîne1, chaîne2, etc.}
+    -- pratique pour "insérer" des chiffres dans vos tags
+    -- vous trouverez un exemple d'utilisation dans la fonction getScore
 function splitText (input_string, separator)
     if separator == nil then
         separator = "%s"
