@@ -105,7 +105,7 @@ end
 function setupTable()
     local pos = deck1.positionToWorld({-20, -1, -7})
     for i = 1, 3 do
-        for i = 1, 6 do
+        for j = 1, 6 do
             local params = {}
             params.position = pos
             params.rotation = {0, 180, 0}
