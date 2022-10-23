@@ -53,7 +53,7 @@ function testColors()
     return true
 end
 
--- [ACME] Check that selected nb of players = nb of seated players
+-- [ACME] Check if selected nb of players == nb of seated players
     -- ONLY for modules asking to select number of players in a menu or UI
     -- requires : add in 1st line of function setup() : if testSeated()==false then return 0 end
 function testSeated(nb_players)
@@ -286,58 +286,62 @@ end
         -- 1 tile + 1 zone (superposed) on which resources will be counted, for each player
         -- rotate the tile regarding the player hand rotation
 
-    -- ADD FOLOWING 1) 2) 3) AT THE END OF FUNCTION onLoad()
-        -- 1) a table named player with following information for each player color:
-        -- player = {
-        --     [color] = {
-        --         tile_counting = getObjectFromGUID(''),   -- tile on which counts will be displayed
-        --         zone_counting = getObjectFromGUID(''),   -- zone where all resources are counted
-        --         rotation = 90                            -- rotation of elements in front of the player
-        --     }
-        -- }
-        -- 2) PARAMETERS FOR AUTOMATIC COUNTING
-            -- table with resource names and infinite bags where to pick them
-        resource_table = {
-            {name = "coin", infinite_bag = getObjectFromGUID('')},
-            {name = "banana", infinite_bag = getObjectFromGUID('')}
-        }
-        --local position of the labels of the differents resources to count, on the tile_counting
-        counting_label_start_position = {0, 0, -3.4}
-    -- 3) FUNCTION TO LAUNCH SCRIPT
-        launchAutomaticResourceCounting()
--------------------------------------------------------------------------------------------------------
+-- [ACME] AUTOMATIC PLAYER RESOURCE COUNTING--------------------------------------------------------------------------
+    -- counts and manage several ressources for each player
+    -- REQUIREMENTS
+        -- 1 tile + 1 zone (superposed) on which resources will be counted, for each player
+        -- rotate the tile regarding the player hand rotation
 
+    -- -- ADD FOLOWING 1) 2) 3) AT THE END OF FUNCTION onLoad()
+    --     -- 1) a table named player with following information for each player color:
+    --     table_players = {
+    --         ['White'] = {
+    --             tile_counting = getObjectFromGUID('0b45fb'),   -- tile on which counts will be displayed
+    --             zone_counting = getObjectFromGUID('3ea23c'),   -- zone where all resources are counted
+    --         }
+    --     }
+    --     -- 2) PARAMETERS FOR AUTOMATIC COUNTING
+    --         -- table with resource names and infinite bags where to pick them
+    --         resource_table = {
+    --             {name = "monnaie1", infinite_bag = getObjectFromGUID('200cdb')},
+    --             {name = "banana", infinite_bag = getObjectFromGUID('ab24e9')}
+    --         }
+    --         -- local position of the labels of the differents resources to count, on the tile_counting
+    --         counting_label_start_position = {0, 0.2, 0.8}
+    --     -- 3) FUNCTION TO LAUNCH SCRIPT
+    --         launchAutomaticResourceCounting()
+    -------------------------------------------------------------------------------------------------------
 
 function launchAutomaticResourceCounting()
-    activatePlayerCountingTile(player,resource_table)
-    timerID = math.random(9999999999999)
-    Timer.create({
-        identifier=timerID,
-        function_name="updateResources",
-        function_owner=self,
-        -- parameters = {param1 = val},
-        repetitions=0,
-        delay=1
-    })
+    activatePlayerCountingTile(table_players,resource_table)
+    Wait.time(
+        function ()
+            updateResources()
+        end,
+        0.3,
+        -1
+    )
 end
 
 function activatePlayerCountingTile(table_players, resource_table)
     for color, params in pairs(table_players) do
         -- reset position (shallow copy of counting_label_start_position)
-        local position = {table.unpack(counting_label_start_position)}
+        local position = Vector({table.unpack(counting_label_start_position)})
         for index, table in pairs(resource_table) do
-            table_players[color].tile_counting.createButton({
+            local tile = table_players[color].tile_counting
+            tile.createButton({
                 click_function = 'doNothing',
                 function_owner = Global,
                 label = table.name ..'s: '..'0',
                 font_color = color,
-                font_size = 280,
+                font_size = 600,
+                scale = {0.1,0.1,0.1},
                 height = 0,
                 width = 0,
                 position = position,
-                rotation = {0, 0, 0} --(180 + table_players[color].rotation[2])
+                rotation = tile.getRotation() + Vector({0, 180, 0})
             })
-            position[3] = position[3] + 0.5
+            position = position + Vector({0,0,-0.2})
         end
     end
 end
@@ -347,15 +351,16 @@ end
 
 -- dummy function launch from the button click
 function updateResources()
-    updatePlayerResourceAmounts(player, resource_table)
+    updatePlayerResourceAmounts(table_players, resource_table)
 end
 
 -- update player[color] table with ressources
 function updatePlayerResourceAmounts(table_players, resource_table)
     for color, _ in pairs(table_players) do
         for index, line in pairs(resource_table) do
-            local nb_resource = countResourceInZone(table_players[color].zone_counting,line.name)
-            table_players[color].tile_counting.editButton({
+            local tile = table_players[color].tile_counting
+            local nb_resource = countResourceOnTile(tile,line.name)
+            tile.editButton({
                 index = (index-1),
                 label = line.name ..'s: '..nb_resource
             })
@@ -365,11 +370,20 @@ function updatePlayerResourceAmounts(table_players, resource_table)
 end
 
 --this function uses TTS tags. Tag all items to count
-function countResourceInZone(zone_counting, ressource_name)
+function countResourceOnTile(tile, ressource_name)
     local nb_resource = 0
-    local objects = zone_counting.getObjects()
-    for _, object in pairs(objects) do
-        if object.getTags()[1] == ressource_name then
+    local hitList = Physics.cast({
+        origin = tile.getPosition(),
+        direction = {0, 1, 0},
+        type = 3,
+        -- debug = true,
+        size = tile.getBoundsNormalized().size + Vector({0, 2, 0}),
+        orientation = tile.getRotation(),
+        max_distance = 0,
+    })
+    for _, object in ipairs(hitList) do
+        local obj = object.hit_object
+        if obj.hasTag(ressource_name) or obj.getName() == ressource_name or obj.getGMNotes() == ressource_name then
             nb_resource = nb_resource + 1
         end
     end
@@ -404,7 +418,7 @@ function addResourceToPlayer(color, resource_name, amount)
     else
         local pos_x = player[color].tile_counting.getPosition()[1]
         local pos_z = player[color].tile_counting.getPosition()[3]
-        local rot_y = player[color].rotation[2]
+        local rot_y = player[color].tile_counting.getRotation()[2]
         -- index will 
         local index = findResourceIndex(resource_table,resource_name)
         for i = 1, amount do
@@ -431,4 +445,4 @@ function findResourceIndex(resource_table, resource_name)
         end
     end
 end
--- [END OF] Automated PLAYER resource couting tile  ------------------------------------------------------------
+-- [END OF] Automated PLAYER resource couting tile  ------------------------------------------------------------    

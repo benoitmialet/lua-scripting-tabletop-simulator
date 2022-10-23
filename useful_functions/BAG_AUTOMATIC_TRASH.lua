@@ -1,43 +1,24 @@
 -- This scripts allows a bag to check every object dropped in it and replace them at the right place on the table
--- 1) Copy this script in the object
--- 2) Fill the names
--- 3) Fill the 'Set objects section'
+-- 1) Set a resource name to your resource bags
+-- 2) Set the same name or GM_notes or tag to their resources (tokens, tiles, 3D models...) 
+-- 3) Copy this script in the trash and cut & paste it.
 
-
--- 2) Objects names
--- names (case sensitive) of objects to place on the table
-local moveList   = {'bois', 'pierre', 'rosbeef', 'tente', 'peau', 'talisman', 'vêtement', 'hache','loup','corde','piège','racines','radeau','coiffe','torche','outil','lance'}
--- names (case sensitive) of objects to delete
 local deleteList = {}
-
 local bSize = {x=self.getBounds().size.x, y=self.getBounds().size.y, z=self.getBounds().size.z}
 loop = true
 Y = nil
 
-
 function setPrams(obj,key) -- Set Prams based on the the object dropped.
-    Y = Y + 0.5
     local setPrams = {}
-    -- 3) Set objects
-    if obj.name == 'bois' then setPrams = {guid = obj.guid, position =  {-28.49, 4, 4.87}, rotation = {0, 180, 0}} end
-    if obj.name == 'pierre' then setPrams = {guid = obj.guid, position = {-23.50, 4, 4.86}, rotation = {0, 180, 0}} end
-    if obj.name == 'rosbeef' then setPrams = {guid = obj.guid, position = {-18.50, 4, 4.86}, rotation = {0, 180, 0}} end
-    if obj.name == 'tente' then setPrams = {guid = obj.guid, position = {-7.5, 3, 8.5}, rotation = {0, 180, 0}} end
-    if obj.name == 'peau' then setPrams = {guid = obj.guid, position = {-3.5, 3, 8.5}, rotation = {0, 180, 0}} end
-    if obj.name == 'talisman' then setPrams = {guid = obj.guid, position = {0.5, 3, 8.5}, rotation = {0, 180, 0}} end
-    if obj.name == 'vêtement' then setPrams = {guid = obj.guid, position = {0.50, 3, 8.50}, rotation = {0, 180, 0}} end
-    if obj.name == 'talisman' then setPrams = {guid = obj.guid, position = {-2.50, 3, 5.50}, rotation = {0, 180, 0}} end
-    if obj.name == 'hache' then setPrams = {guid = obj.guid, position = {8.5, 3, 8.5}, rotation = {0, 180, 0}} end
-    if obj.name == 'loup' then setPrams = {guid = obj.guid, position = {-6.50, 3, 5.50}, rotation = {0, 180, 0}} end
-    if obj.name == 'corde' then setPrams = {guid = obj.guid, position = {4.50, 3, 8.50}, rotation = {0, 180, 0}} end
-    if obj.name == 'piège' then setPrams = {guid = obj.guid, position = {5.5, 3, 5.5}, rotation = {0, 180, 0}} end
-    if obj.name == 'racines' then setPrams = {guid = obj.guid, position = {9.5, 3, 5.5}, rotation = {0, 180, 0}} end
-    if obj.name == 'radeau' then setPrams = {guid = obj.guid, position = {1.50, 3, 5.50}, rotation = {0, 180, 0}} end
-    if obj.name == 'coiffe' then setPrams = {guid = obj.guid, position = {-10.5, 3, 5.5}, rotation = {0, 180, 0}} end
-    if obj.name == 'torche' then setPrams = {guid = obj.guid, position = {-4.93, 3, 13.49}, rotation = {0, 180, 0}} end
-    if obj.name == 'outil' then setPrams = {guid = obj.guid, position = {0.02, 3, 13.49}, rotation = {0, 180, 0}} end
-    if obj.name == 'lance' then setPrams = {guid = obj.guid, position = {4.93, 3, 13.49}, rotation = {0, 180, 0}} end
-
+    local index = hasValue(moveListNames, obj.name) or hasValue(moveListNames, obj.gm_notes) or hasValue(moveListNames, obj.tags[1])
+    if index then
+        Y = Y + 1
+        setPrams = {
+            guid = obj.guid,
+            position = containerList[index].position + Vector({0,5,0}),
+            rotation = containerList[index].rotation
+        }
+    end
     return setPrams
 end
 
@@ -45,11 +26,29 @@ function processList(objectsInBag)
     Y = setY()
     checkDelete(objectsInBag)
     checkMove(objectsInBag)
-    -- checkDeck(objectsInBag) -- if you only need to move to a single deck location, comment this out and ste it in the move list!
+    checkDeck(objectsInBag) -- if you only need to move to a single deck location, comment this out and ste it in the move list!
 end
 
 function onload()
     math.randomseed(os.time())
+    fillLists()
+end
+
+function fillLists()
+    moveListNames = {}
+    containerList = {}
+    for i, obj in ipairs(getAllObjects()) do
+        if (obj.type == 'Bag' or obj.type == 'Deck') and obj.getName() ~= "" then
+            table.insert(moveListNames, obj.getName())
+            table.insert(containerList,
+                {
+                    name = obj.getName(),
+                    position = obj.getPosition(),
+                    rotation = obj.getRotation()
+                }
+            )
+        end
+    end
 end
 
 function onCollisionEnter(obj)
@@ -112,29 +111,26 @@ function checkMove(objectsInBag)
     local mvLIST = {}
     local loopFix = true
     ---Test for MOVING and store the GUID of those objects (using a nameList)
-       for _, obj in ipairs(objectsInBag) do
-           --print(obj.guid)
-            for _, key in ipairs(moveList) do
-               if string.match(obj.name, key) then
-                   if loopFix == true then
-                       local prams = setPrams(obj,key)
-                       table.insert(mvLIST, prams)
-                   end
-                  loopFix = false
-               end
+    for _, obj in ipairs(objectsInBag) do
+        if hasValue(moveListNames, obj.name) or hasValue(moveListNames, obj.gm_notes) or hasValue(moveListNames, obj.tags[1]) then
+            if loopFix == true then
+                local prams = setPrams(obj,key)
+                table.insert(mvLIST, prams)
             end
-            loopFix = true
+            loopFix = false
         end
+        loopFix = true
+    end
 
     ---Loop though the ORIGINAL bag and take objects to move location (moveLIST)
-        local yy = nil
-        local setPos = false
-        for _, prams in ipairs(mvLIST) do
-            if yy == nil then yy = prams.position[2] end
-            local o = self.takeObject(prams)
-            o.setPositionSmooth({prams.position[1], yy, prams.position[3]}, false, false) -- + obj.getBoundsNormalized().size.y
-            yy = yy + o.getBoundsNormalized().size.y+0.4
-        end
+    local yy = nil
+    local setPos = false
+    for _, prams in ipairs(mvLIST) do
+        if yy == nil then yy = prams.position[2] end
+        local o = self.takeObject(prams)
+        o.setPositionSmooth({prams.position[1], yy, prams.position[3]}, false, false) -- + obj.getBoundsNormalized().size.y
+        yy = yy + o.getBoundsNormalized().size.y+1
+    end
 end
 
 function checkDelete(objectsInBag)
@@ -155,4 +151,13 @@ function checkDelete(objectsInBag)
       local obj = self.takeObject(prams)
       obj.destruct()
     end
+end
+
+function hasValue (tab, val)
+    for index, value in ipairs(tab) do
+        if value == val then
+            return index
+        end
+    end
+    return false
 end

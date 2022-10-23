@@ -21,7 +21,7 @@ function onLoad(saved_data)
     -------------------------------------------------------------------------------------------------
     counting_tile_params = {
         label_position = {0, 1, 0.4},
-        font_size = 60,
+        font_size = 600,
         label_spacing = 0.2,                -- vertical spacing between 2 labels
         turn_180 = false                    -- wheter turns or not label position and rotation 180° vertically
     }
@@ -57,6 +57,7 @@ function activateCountingTile()
             rotation = rotation,
             height=0,
             width=0,
+            scale = {0.1,0.1,0.1},
             font_size = counting_tile_params.font_size
         })
         table.insert(table_names, resource.name)
@@ -65,8 +66,8 @@ function activateCountingTile()
     spawnZoneCapture()
 end
 
+-- destroy zone_capture from previous save
 function destructOldZone()
-    -- destroy zone_capture from previous save
     if getObjectFromGUID(game_data.zone_capture_guid) then
         getObjectFromGUID(game_data.zone_capture_guid).destruct()
     end
@@ -91,8 +92,9 @@ function CountResources(name)
         _G[varname] = 0
     end
     for _, object in ipairs(zoneObjects) do
-        if hasValue(table_names, object.getName()) then
-            local varname = "nb_" .. tostring(object.getName())
+        matching_thing = tryMatchingThing(table_names, object)
+        if matching_thing then
+            local varname = "nb_" .. tostring(matching_thing)
             _G[varname] = _G[varname] + 1
         end
     end
@@ -103,30 +105,58 @@ function CountResources(name)
     end
 end
 
-function hasValue (tab, val)
-    for index, value in ipairs(tab) do
-        if value == val then
-            return index
+--check if at least one value is found in two tables
+function atLeastOneMatch(table1, table2)
+    if table1 and table2 then
+        for _, value in ipairs(table1) do
+            if hasValue(table2, value) then
+                return value
+            end
         end
+        return false
     end
-    return false
+end
+
+--check if at least one object's attribute is found a table
+function tryMatchingThing(table, object)
+    if hasValue(table, object.getName()) then
+        return object.getName()
+    elseif hasValue(table, object.getGMNotes()) then
+        return object.getGMNotes()
+    elseif atLeastOneMatch(table, object.getTags()) then
+        return atLeastOneMatch(table, object.getTags())
+    else
+        return nil
+    end
+end
+
+--check if at least one value is found a table
+function hasValue (tab, val)
+    if tab and val then
+        for index, value in ipairs(tab) do
+            if value == val then
+                return index
+            end
+        end
+        return false
+    end
 end
 
 
 function onObjectEnterScriptingZone(zone, enter_object)
     if zone.guid == zone_capture.guid then
-        local name = enter_object.getName()
-        if hasValue(table_names, name) then
-            CountResources(name)
+        matching_thing = tryMatchingThing(table_names, enter_object)
+        if matching_thing then
+            CountResources(matching_thing)
         end
     end
 end
 
 function onObjectLeaveScriptingZone(zone, enter_object)
     if zone.guid == zone_capture.guid then
-        local name = enter_object.getName()
-        if hasValue(table_names, name) then
-            CountResources(name)
+        matching_thing = tryMatchingThing(table_names, enter_object)
+        if matching_thing then
+            CountResources(matching_thing)
         end
     end
 end
