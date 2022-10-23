@@ -29,7 +29,7 @@ end
     -- Les fonctions evenement se déclenchent sur un évenement (clic souris, collision entre deux objets, etc.)
     -- Il en existe une grande quantité : https://api.tabletopsimulator.com/events/
     -- onObjectEnterScriptingZone() se déclenchera à l'entrée de tout objet dans une zone de  script.
-    -- on va l'utiliser comme suivant :
+    -- on va l'utiliser comme suit :
         -- on sélectionne uniquement la zone qui nous intéresse (zone_capture)
         -- on utilise les GMNotes des objets plutot que le nom.
 function onObjectEnterContainer(container, object)
@@ -53,7 +53,9 @@ function onObjectLeaveContainer(container, leave_object)
 end
 
 
-
+-- PIOCHER DANS UN SAC AVEC LE PAVE NUMERIQUE
+    -- Cette fonction événement réagit au pavé numérique
+    -- Ici on l'utilise pour piocher des ressources et les faire arriver au pointeur de la souris
 function onScriptingButtonDown(index, player_color)
     local source = {
         bag_token_1,
@@ -98,6 +100,9 @@ function onObjectEnterZone(zone, enter_object)
     end
 end
 
+-- Cette fonction renvoie un vecteur qui peut etre utilisé dans n'importe quellle fonction demandant une position
+-- ce vecteur modifiera sensiblement cette position, suivant un rayon choisi
+-- le but est de l'utiliser dans une boucle pour faire varier la position d'arrivée d'objets que l'on sortirait d'un conteneur par exemple.  
 function addJitter(radius)
     local x_norm = (-2*math.log(math.random()))^0.5 * math.cos(2 * math.pi * math.random())/1.96 * radius
     local z_norm = (-2*math.log(math.random()))^0.5 * math.sin(2 * math.pi * math.random())/1.96 * radius

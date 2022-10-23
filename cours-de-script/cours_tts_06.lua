@@ -8,6 +8,8 @@
 
 button_setup_guid = '0926c8'
 deck1_guid = 'c9c4c8'
+die_guid = 'dbf42c'
+
 
 -- SAUVEGARDE DE DONNEES
     -- La sauvegarde de données intervient à chaque chargement de partie ET à chaque retour arrière (CTRL+Z)
@@ -40,6 +42,7 @@ function onLoad(saved_data)
 
     button_setup = getObjectFromGUID(button_setup_guid)
     deck1 = getObjectFromGUID(deck1_guid)
+    die = getObjectFromGUID(die_guid)
 
     if game_data.setup_done == false then
         activateButtonMenu()
@@ -58,10 +61,22 @@ function activateButtonMenu()
         position        = {0, 0.3, 0},
         rotation        = {0, 180, 0}
     })
+    button_setup.createButton({
+        click_function = "throw",
+        function_owner = Global,
+        label          = "lancer le dé",
+        height          = 1000,
+        width           = 2000,
+        font_size       = 300,
+        color           = {1, 1, 1, 1},
+        position        = {0, 0.3, 1},
+        rotation        = {0, 180, 0}
+    })
 end
 
 -- GERER LE TIMING AVEC TIME
-    -- gérer un timing permet de décaler l'exécution d'une fonction dans le temps
+    -- gérer un timing avec la classe Wait permet de décaler l'exécution d'une fonction dans le temps
+    -- https://api.tabletopsimulator.com/wait/
     -- ici on veut qu'un instaurer un petit délai entre chaque pioche de carte, juste pour l'esthétique 
     -- on procède en 2 étapes : 
         -- 1) on définit le delai en secondes entre chaque carte posée (delay_add)
@@ -119,6 +134,7 @@ function setupTable()
 end
 
 
+
 -- ATTENTION : La fonction Wait.time() donne l'illusion que le code placé en paramètre va "attendre" avant d'être exécuté
     -- En réalité, tout le bloc de code sera exécuté instantément. 
     -- C'est son processus qui va être décalé dans le temps. Cela peut crééer des surprises inattendues.
@@ -151,3 +167,31 @@ end
 --         pos = pos + Vector({-18, 0, -4})
 --     end
 -- end
+
+
+-- WAIT AVEC UNE CONDITION : JETER UN DE ET AFFICHER LE RESULTAT
+    -- Cet exemple est tiré de l'API : https://api.tabletopsimulator.com/wait/#condition
+    -- Wait peut être soumis à une condition plutôt qu'à un timing
+    -- On a deux paramètres pour Wait.condition, qui sont chacun une fonction
+    -- Le 2e paramètre de la fonction, s'écrit de la même façon que le premier, est donc aussi une fonction
+-- RESTING
+    -- resting est une propriété qui renvoyé true ou false selon si l'objet est à l'arrêt ou en mouvement
+    function throw()
+        die.randomize()
+        Wait.condition(
+            ----------------------------------------------------------------------------------
+            -- 2) La partie du code exécutée après que la condition soit vérifiée
+            function() -- Executed after our condition is met
+                if die.isDestroyed() then
+                    print("Le dé a disparu...")
+                else
+                    print("Score : " .. die.getRotationValue())
+                end
+            end,
+            -----------------------------------------------------------------------------------
+            -- 1) La condition qui doit être vérifiée pour que la fonction en 2) se déclenche
+            function()
+                return die.isDestroyed() or die.resting
+            end
+        )
+    end
