@@ -2,7 +2,10 @@
 
 
 ## Apprendre à scripter
-Ce dossier rassemble 8 cours pour apprendre à scripter vos modules Tabletop Simulator (TTS) en LUA. Chaque cours correspondant à 1 feuille de script commenté, et est basé sur un ou deux aspects de programmation. Vous apprendrez les méthodes de base pour effectuer des mises en place automatisées de vos jeux. Il est conseillé de se renseigner sur les concepts de base en programmation, comme par exemple :
+Ce dossier rassemble des cours pour apprendre à scripter vos modules Tabletop Simulator (TTS) en LUA. Chaque cours correspondant à 1 feuille de script commenté, et est basé sur un ou deux aspects de programmation. Vous apprendrez les méthodes de base pour effectuer des mises en place automatisées de vos jeux. 
+Chaque cours sert de support pour cette playlist (un cours par vidéo) : https://www.youtube.com/watch?v=bigoSmwumDo&list=PLF3t8YeHGsEZlKWd9_ix2lxp1P9MZnkwo
+
+Avant de commencer, il est conseillé de se renseigner sur les concepts de base en programmation, comme par exemple :
 
 * Qu'est ce qu'une variable ? une méthode ou une fonction ?
 * A quoi sert une boucle FOR ?
