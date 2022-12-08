@@ -1,4 +1,3 @@
-
 ----------------------------------------------------------------------------------------------------
 -- SCRIPTER POUR TABLETOP SIMULATOR /7 - Application
 -- MAJ 08/12/2022
@@ -30,7 +29,7 @@ end
 --a) Menu avec 1 bouton pour chaque option
 ------------------------------------------------------------------------------------------
 
--- On commence par définir deux couleurs pour les boutons selon qu'il soit sléectionné ou pas
+-- On commence par définir deux couleurs pour les boutons selon qu'il soit sélectionné ou pas
 selected_color = {102/255, 205/255, 170/255, 1}
 inactive_color = {241/255, 244/255, 252/255, 1}
 
@@ -121,11 +120,11 @@ function setScenario6()    setScenario(6) end
 function setScenario(scenario)
     selected_scenario = scenario
     for i=1, 6 do
-        local bgcolor = inactive_color
-        if i == scenario then bgcolor = selected_color end
+        local bg_color = inactive_color
+        if i == scenario then bg_color = selected_color end
         button_setup_a.editButton({
             index = i-1,
-            color = bgcolor,
+            color = bg_color,
         })
     end
 end
@@ -137,7 +136,7 @@ end
 
 
 ------------------------------------------------------------------------------------------
---a) Menu avec 1 seul bouton et des flèches de sélection droite et gauche
+--b) Menu avec 1 seul bouton et des flèches de sélection droite et gauche
 ------------------------------------------------------------------------------------------
 
 function activateButtons_b()
@@ -196,7 +195,7 @@ function scenarioRight() toggleScenario(1) end
     -- on créée une règle logique pour modifier le numéro du scénario en fonction d ella flèche cliquée.
     -- on met à jour l'affichage du bouton.
 function toggleScenario(value_change)
-    scenario_list = {
+    scenario_table = {
         'Scénario 1',
         'Scénario 2',
         'Scénario 3',
@@ -205,14 +204,14 @@ function toggleScenario(value_change)
         'Scénario 6',
     }
 
-    if value_change > 0 and selected_scenario == #scenario_list then
+    if value_change > 0 and selected_scenario == #scenario_table then
         selected_scenario = 1
     elseif value_change < 0 and selected_scenario == 1 then
-        selected_scenario = #scenario_list
+        selected_scenario = #scenario_table
     else
         selected_scenario = selected_scenario + value_change
     end
 
-    label = scenario_list[selected_scenario]
+    label = scenario_table[selected_scenario]
     button_setup_b.editButton({index=0, label=label})
   end
