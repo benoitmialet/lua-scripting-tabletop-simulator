@@ -137,7 +137,7 @@ function hasValue (tab, val)
 end
 
 -- [Author ?] Shuffle a table
-function shuffle(t)
+function shuffleTable(t)
     for i = 1, #t - 1 do
         local r = math.random(i, #t)
         t[i], t[r] = t[r], t[i]
@@ -189,11 +189,12 @@ end
     -- if no container is found, take an amount of non-locked objects found in a zone.
     -- Arguments:
         -- zone: object. Zone where the container or objects are
-        -- nb_to_take: integer. amount of objects to deal
+        -- nb: integer. amount of objects to deal
         -- position: vector. Where to put the objects
         -- Rotation: vector (optional)
     -- returns a table of taken objects
-function takeObjectsFromZone(zone, nb_to_take, position, rotation)
+function takeObjectsFromZone(zone, nb, position, rotation)
+    local nb_to_take = (nb or 1)
     local objects = zone.getObjects()
     local container = nil
     local table_obj_dealt = {}
@@ -228,6 +229,81 @@ function takeObjectsFromZone(zone, nb_to_take, position, rotation)
                     local rotation = rotation or obj.getRotation()
                     local obj_dealt = obj
                     moveObj(obj_dealt, i)
+                    nb_to_take = nb_to_take - 1
+                    i = i + 1
+                end
+            else
+                break
+            end
+        end
+    end
+    local nb_missing = nb_to_take - nb_left
+    if nb_missing > 0 then
+        broadcastToAll(nb_missing.." objects missing")
+    end
+    return table_obj_dealt
+end
+
+-- [ACME] Take an amount of objects from ANY first container found (deck, bag, infinite bag) nearby a position.
+    -- if no container is found, take an amount of non-locked objects found nearby the position.
+    -- Arguments (table):
+        -- table.origin (mandatory, vector): position of the detection square
+        -- table.size (optional, float): size of the detection square
+        -- table.nb_to_take (mandatory, int): number of elements to take
+        -- table.position (mandatory, vector): destination position
+        -- table.rotation (optional, vector): destination rotation 
+        -- table.debug (optional, bool): briefly see the cast zone if true 
+    -- returns a table of taken objects
+function takeObjectsFromPosition(params)
+    local origin = params.origin
+    local nb_to_take = (params.nb or 1)
+    local position =params.position
+    local size = (params.size or 4)
+    local debug = (params.debug or false)
+    local container = nil
+    local table_obj_dealt = {}
+    local nb_left
+    local function moveObj(obj_dealt, i, rotation)
+        local jump = Vector({0, obj_dealt.getBoundsNormalized().size.y, 0}) * (i+1) -- jump between objects
+        obj_dealt.setPositionSmooth(Vector(position) + jump)
+        obj_dealt.setRotationSmooth(Vector(rotation))
+        table.insert(table_obj_dealt, obj_dealt)
+    end
+    local hitList = Physics.cast({
+        origin = params.origin,
+        direction = {0, 1, 0},
+        type = 3,
+        debug = debug,
+        size = Vector({size, size, size}) + Vector({0, 8, 0}),
+        orientation = {0, 0, 0},
+        max_distance = 0,
+    })
+    for _, object in ipairs(hitList) do
+        local obj = object.hit_object
+        if obj.type == 'Infinite' or obj.type == 'Bag' or obj.type == 'Deck' then
+            container = obj
+            break
+        end
+    end
+    if container ~= nil then
+        container.shuffle()
+        local rotation = (params.rotation or container.getRotation())
+        nb_left = container.getQuantity()
+        if  container.type == 'Infinite' then nb_left = nb_to_take end
+        for i = 1, math.min(nb_left, nb_to_take)     do
+            local obj_dealt = container.takeObject()
+            moveObj(obj_dealt, i, rotation)
+        end
+    else
+        nb_left = 0
+        local i = 1
+        for _, object in ipairs(hitList) do
+            local obj = object.hit_object
+            if nb_to_take > 0 then
+                if obj.getLock() == false then
+                    local rotation = (params.rotation or {0, 180, 0})
+                    local obj_dealt = obj
+                    moveObj(obj_dealt, i, rotation)
                     nb_to_take = nb_to_take - 1
                     i = i + 1
                 end

@@ -49,7 +49,7 @@ function onLoad(saved_data)
         }
     }
 
-    if game_data.setup_done == false then
+    if getObjectFromGUID(button_setup_guid) then
         activateButtonMenu()
     end
 end
@@ -86,7 +86,7 @@ function activateButtonMenu()
         height          = 500,
         font_size       = 360,
         color			= {1, 1, 1, 1},
-        position        = {-5.5, 1, -1},
+        position        = {-4.1, 1, -1},
         rotation        = {0,180,0}
     })
 end
