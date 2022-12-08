@@ -51,10 +51,10 @@ function activateButtonMenu()
         click_function = "moveCube", -- ce paramètre définit la fonction qui va être déclenchée en cliquant sur le bouton
         function_owner = Global, --où se trouve cette fonction (ici, dans l'environnement global, la table de jeu)
         label          = "Démarrer",
-        height          = 500,
-        width           = 600,
-        font_size       = 130,
-        color           = {0.5, 1, 0.5, 1}, -- premiere façon d'écrire une couleur {r,g,b, opacité}, valeurs de 0 à 1
+        height          = 490,
+        width           = 490,
+        font_size       = 110,
+        color           = 'White', -- premiere façon d'écrire une couleur {r,g,b, opacité}, valeurs de 0 à 1
         -- color           = {29/255, 230/255, 154/255, 1},-- la même façon, en utilisant des fractions
         -- color           = 'Green', -- deuxième façon, sous forme de chaine de caractères ('Yellow', 'Red', 'Blue'...)
         position        = {0, 0.5, 0},
