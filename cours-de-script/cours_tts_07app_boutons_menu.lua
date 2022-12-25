@@ -195,7 +195,7 @@ function scenarioRight() toggleScenario(1) end
     -- on créée une règle logique pour modifier le numéro du scénario en fonction d ella flèche cliquée.
     -- on met à jour l'affichage du bouton.
 function toggleScenario(value_change)
-    scenario_table = {
+    local scenario_table = {
         'Scénario 1',
         'Scénario 2',
         'Scénario 3',
@@ -204,14 +204,14 @@ function toggleScenario(value_change)
         'Scénario 6',
     }
 
-    if value_change > 0 and selected_scenario == #scenario_table then
+    if value_change > 0 and ((selected_scenario == nil) or (selected_scenario == #scenario_table)) then
         selected_scenario = 1
-    elseif value_change < 0 and selected_scenario == 1 then
+    elseif value_change < 0 and ((selected_scenario == nil) or (selected_scenario == 1))then
         selected_scenario = #scenario_table
     else
         selected_scenario = selected_scenario + value_change
     end
 
-    label = scenario_table[selected_scenario]
+    local label = scenario_table[selected_scenario]
     button_setup_b.editButton({index=0, label=label})
-  end
+end

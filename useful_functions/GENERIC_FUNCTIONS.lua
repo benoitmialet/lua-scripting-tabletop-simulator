@@ -185,6 +185,26 @@ end
 
 --CARDS/OBJECTS----------------------------------------------------------------------------------------------
 
+
+-- [ACME] call objects with numeric pad and place them on the mouse cursor
+function onScriptingButtonDown(index, color)
+    -- place all resource bag objects in this array
+    local source = {
+        bag_token,
+        -- bag.fers,
+        -- bag.rochecoeurs
+    }
+    if index > #source then return end -- stop the function
+    if source[index].getQuantity() == 0 then
+        broadcastToColor('Cette ressource est épuisée', color, color)
+    else
+        local params={}
+        params.position = getPointerPosition(color) + Vector ({0,2,0})
+        params.rotation = {0, getPointerRotation(color), 0}
+        source[index].takeObject(params)
+    end
+end
+
 -- [ACME] Take an amount of objects from ANY first container found (deck, bag, infinite bag) in a zone.
     -- if no container is found, take an amount of non-locked objects found in a zone.
     -- Arguments:
@@ -319,25 +339,6 @@ function takeObjectsFromPosition(params)
     return table_obj_dealt
 end
 
-
--- [ACME] call objects with numeric pad and place them on the mouse cursor
-function onScriptingButtonDown(index, color)
-    -- place all resource bag objects in this array
-    local source = {
-        bag_token,
-        -- bag.fers,
-        -- bag.rochecoeurs
-    }
-    if index > #source then return end -- stop the function
-    if source[index].getQuantity() == 0 then
-        broadcastToColor('Cette ressource est épuisée', color, color)
-    else
-        local params={}
-        params.position = getPointerPosition(color) + Vector ({0,2,0})
-        params.rotation = {0, getPointerRotation(color), 0}
-        source[index].takeObject(params)
-    end
-end
 
 --adds some small randomisation to a position. Must be added to a position Vector 
     -- Arguments:
